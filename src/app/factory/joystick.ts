@@ -20,11 +20,14 @@ export class Joystick {
     rocker: Rocker;
     startX: number;
     startY: number;
+    speedCoefficient: number;
+    angle: number;
+    touching = false;
     constructor(
-        position: Position = {x: 100, y: 350},
+        position: Position = {x: 50, y: 50},
         renderArea: RenderArea = {
             color: '#e5e5e5',
-            radius: 60
+            radius: 50
         },
         rocker: Rocker = {
             position: {
@@ -32,7 +35,7 @@ export class Joystick {
                 y: 0
             },
             color: '#aaa',
-            radius: 20
+            radius: 16
         }) {
         this.position = position;
         this.renderArea = renderArea;
@@ -45,12 +48,13 @@ export class Joystick {
                 x: x,
                 y: y
             };
+            this.speedCoefficient = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) / (this.renderArea.radius - this.rocker.radius);
         } else {
             this.rocker.position = {
                 x: (this.renderArea.radius - this.rocker.radius) * x / Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)),
                 y: (this.renderArea.radius - this.rocker.radius) * y / Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
             };
-            return ;
+            this.speedCoefficient = 1;
         }
     }
 
@@ -58,6 +62,7 @@ export class Joystick {
         if (event.targetTouches.length !== 1) {
             return ;
         }
+        this.touching = true;
         this.startX = event.touches[0].clientX;
         this.startY = event.touches[0].clientY;
     }
@@ -70,10 +75,28 @@ export class Joystick {
         const x  = event.touches[0].clientX - this.startX;
         const y  = event.touches[0].clientY - this.startY;
         this.moveRocker(x, y);
+        this.getAngle();
     }
 
     handleTouchend(event) {
+        this.touching = false;
         this.moveRocker(0, 0);
+    }
+
+    getAngle() {
+        if (this.rocker.position.x >= 0 && this.rocker.position.y < 0) {
+            this.angle = Math.floor((Math.atan((-this.rocker.position.y) / (this.rocker.position.x)) * 180 / Math.PI));
+        }
+        if (this.rocker.position.x < 0 && this.rocker.position.y < 0) {
+            this.angle = Math.floor((Math.atan((this.rocker.position.x) / (this.rocker.position.y)) * 180 / Math.PI)) + 90;
+        }
+        if (this.rocker.position.x < 0 && this.rocker.position.y >= 0) {
+            this.angle = Math.floor((Math.atan((this.rocker.position.x) / (this.rocker.position.y)) * 180 / Math.PI)) + 270;
+        }
+        if (this.rocker.position.x > 0 && this.rocker.position.y > 0) {
+            this.angle = Math.floor((Math.atan((this.rocker.position.x) / (this.rocker.position.y)) * 180 / Math.PI)) + 270;
+        }
+        return this.angle;
     }
 
     render(ctx) {
