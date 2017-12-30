@@ -12,8 +12,11 @@ export class Dragon {
     speed: number;
     score: number;
     radius = 10;
-
+    moveDistance = 0;
     recordPosition: any;
+
+    // 转向速度 angle/ms
+    turnSpeed = 0.12;
 
     constructor(
         name: string = 'unknown',
@@ -57,20 +60,23 @@ export class Dragon {
     }
 
     move(angle: number, space: number) {
+        // 转向速度 angle/ms
+        const turnSpeed = this.turnSpeed;
+
         if (Math.abs(angle - this.direction) < 180) {
             if (angle - this.direction > 0) {
-                this.direction += 0.12 * space;
+                this.direction += turnSpeed * space;
             }
             if (angle - this.direction < 0) {
-                this.direction -= 0.12 * space;
+                this.direction -= turnSpeed * space;
             }
         }
         if (Math.abs(angle - this.direction) > 180) {
             if (angle - this.direction > 0) {
-                this.direction -= 0.12 * space;
+                this.direction -= turnSpeed * space;
             }
             if (angle - this.direction < 0) {
-                this.direction += 0.12 * space;
+                this.direction += turnSpeed * space;
             }
         }
         if (this.direction > 360) {
@@ -82,17 +88,16 @@ export class Dragon {
 
         const moveX = this.speed * space / 1000 * Math.cos(Math.PI * this.direction / 180);
         const moveY = this.speed * space / 1000 * Math.sin(Math.PI * this.direction / 180);
-        // const moveY = this.speed * space / 1000 * Math.sin(Math.PI * (this.direction / 180));
         const moveDistance = Math.sqrt(Math.pow(moveX, 2) + Math.pow(moveY, 2));
-        if (moveDistance >= 1) {
+        if (this.moveDistance >= 1) {
+            this.moveDistance = 0;
             this.body.unshift({x: this.header.x, y: this.header.y});
             this.body.pop();
+        } else {
+            this.moveDistance += moveDistance;
         }
         this.header.x += moveX;
         this.header.y -= moveY;
-        // for(let i in this.body) {
-        //   this.body[i].x += x;
-        //   this.body[i].y += y;
-        // }
+
     }
 }
