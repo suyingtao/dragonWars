@@ -9,14 +9,17 @@ export class Dragon {
     body: Array<Position>;
     color: string;
     direction: number;
+
+    // 单位像素/s
     speed: number;
+
     score: number;
     radius = 10;
     moveDistance = 0;
     recordPosition: any;
 
     // 转向速度 angle/ms
-    turnSpeed = 0.12;
+    turnSpeed = 0.2;
 
     constructor(
         name: string = 'unknown',
@@ -86,18 +89,116 @@ export class Dragon {
             this.direction += 360;
         }
 
-        const moveX = this.speed * space / 1000 * Math.cos(Math.PI * this.direction / 180);
-        const moveY = this.speed * space / 1000 * Math.sin(Math.PI * this.direction / 180);
-        const moveDistance = Math.sqrt(Math.pow(moveX, 2) + Math.pow(moveY, 2));
-        if (this.moveDistance >= 1) {
-            this.moveDistance = 0;
-            this.body.unshift({x: this.header.x, y: this.header.y});
-            this.body.pop();
-        } else {
-            this.moveDistance += moveDistance;
-        }
+        const moveX = parseFloat((this.speed * space / 1000 * Math.cos(Math.PI * this.direction / 180)).toFixed(2));
+        const moveY = parseFloat((this.speed * space / 1000 * Math.sin(Math.PI * this.direction / 180)).toFixed(2));
+        const moveDistance = parseFloat((Math.sqrt(Math.pow(moveX, 2) + Math.pow(moveY, 2))).toFixed(2));
+
+        // if (this.moveDistance >= 1) {
+        //     this.moveDistance = 0;
+        //     this.body.unshift({x: this.header.x, y: this.header.y});
+        //     this.body.pop();
+        // } else {
+        //     this.moveDistance += moveDistance;
+        // }
+        this.moveDistance += moveDistance;
+        this.bodyMove({x: this.header.x + moveX, y: parseFloat((this.header.y - moveY).toFixed(2))});
         this.header.x += moveX;
         this.header.y -= moveY;
+    }
 
+    bodyMove(newHeader: Position) {
+
+        if (this.moveDistance >= 1 && this.moveDistance < 2) {
+            this.moveDistance = 0;
+
+            this.body.unshift({x: this.header.x, y: this.header.y});
+            this.body.pop();
+        }
+
+        if (this.moveDistance >= 2) {
+            this.moveDistance = 0;
+            const bodyLen = this.body.length;
+            const dx = newHeader.x - this.header.x;
+            const dy = newHeader.y - this.header.y;
+            const tempBody = [];
+
+            this.body.unshift({x: this.header.x, y: this.header.y});
+
+            if (Math.round(dx) === 0) {
+
+                if (dy > 0) {
+                    for (let y = newHeader.y - 1; Math.round(y) > Math.round(this.header.y) && tempBody.length < bodyLen; y--) {
+                        tempBody.unshift({x: newHeader.x, y: y});
+                    }
+                    for (let i = 0; i < tempBody.length; i++) {
+                        this.body.unshift(tempBody[i]);
+                    }
+                }
+
+                if (dy < 0) {
+                    for (let y = newHeader.y + 1; Math.round(y) < Math.round(this.header.y) && tempBody.length < bodyLen; y++) {
+                        tempBody.unshift({x: newHeader.x, y: y});
+                    }
+                    for (let i = 0; i < tempBody.length; i++) {
+                        this.body.unshift(tempBody[i]);
+                    }
+                }
+
+                this.body.splice(bodyLen);
+            }
+
+            if (Math.round(dy) === 0) {
+
+                if (dx > 0) {
+                    for (let x = newHeader.x - 1; Math.round(x) > Math.round(this.header.x) && tempBody.length < bodyLen; x--) {
+                        tempBody.unshift({x: x, y: newHeader.y});
+                    }
+                    for (let i = 0; i < tempBody.length; i++) {
+                        this.body.unshift(tempBody[i]);
+                    }
+                }
+
+                if (dx < 0) {
+                    for (let x = newHeader.x + 1; Math.round(x) < Math.round(this.header.x) && tempBody.length < bodyLen; x++) {
+                        tempBody.unshift({x: x, y: newHeader.y});
+                    }
+                    for (let i = 0; i < tempBody.length; i++) {
+                        this.body.unshift(tempBody[i]);
+                    }
+                }
+
+                this.body.splice(bodyLen);
+            }
+
+            if (Math.abs(Math.round(dy)) > 0 && Math.abs(Math.round(dx)) > 0) {
+                // y = ax + b
+                const a = this.parseNum(dy / dx, 2);
+                const b = this.parseNum(newHeader.y - a * newHeader.x, 2);
+                console.log(a, b);
+                if (dx > 0) {
+                    for (let x = Math.round(newHeader.x) - 1; Math.round(x) > Math.round(this.header.x) && tempBody.length < bodyLen; x--) {
+                        tempBody.unshift({x: x, y: Math.round(a * x + b)});
+                    }
+                    for (let i = 0; i < tempBody.length; i++) {
+                        this.body.unshift(tempBody[i]);
+                    }
+                }
+
+                if (dx < 0) {
+                    for (let x = Math.round(newHeader.x) + 1; Math.round(x) < Math.round(this.header.x) && tempBody.length < bodyLen; x++) {
+                        tempBody.unshift({x: x, y: Math.round(a * x + b)});
+                    }
+                    for (let i = 0; i < tempBody.length; i++) {
+                        this.body.unshift(tempBody[i]);
+                    }
+                }
+
+                this.body.splice(bodyLen);
+            }
+        }
+    }
+
+    parseNum(num, n) {
+        return parseFloat(num.toFixed(n));
     }
 }

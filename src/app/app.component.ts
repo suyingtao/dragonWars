@@ -30,7 +30,7 @@ export class AppComponent {
       'test',
       {x: 150, y: 150},
       0,
-      50,
+      200,
       [{x: 150, y: 151}, {x: 150, y: 152}, {x: 150, y: 153}, {x: 149, y: 153}, {x: 148, y: 153}, {x: 147, y: 152}, {x: 147, y: 151}],
       0,
       '#FF4040'
@@ -94,7 +94,7 @@ export class AppComponent {
     this.update(now - this.lastDate);
     this.renderGroud(this.ctx);
     this.dragon.render(this.ctx);
-    this.bot.render(this.ctx);
+    //this.bot.render(this.ctx);
     this.lastDate = now;
     requestAnimationFrame(this.render.bind(this));
   }
@@ -125,7 +125,7 @@ export class AppComponent {
     //   }
     // }
     this.dragon.move(this.joystick.joystick.angle, space);
-    this.bot.move(5, space);
+    //this.bot.move(5, space);
     // for(let i = this.dragon.body.length - 1; i>0; i--) {
     //   this.dragon.body[i].x = this.dragon.body[i - 1].x;
     //   this.dragon.body[i].y = this.dragon.body[i - 1].y;
