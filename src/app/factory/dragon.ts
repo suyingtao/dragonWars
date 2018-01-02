@@ -171,11 +171,11 @@ export class Dragon {
             }
 
             if (Math.abs(Math.round(dy)) > 0 && Math.abs(Math.round(dx)) > 0) {
-                // y = ax + b
+                // y = ax + b; x = (y - b) / a
                 const a = this.parseNum(dy / dx, 2);
                 const b = this.parseNum(newHeader.y - a * newHeader.x, 2);
-                console.log(a, b);
-                if (dx > 0) {
+
+                if (Math.abs(a) <= 1 && dx > 0) {
                     for (let x = Math.round(newHeader.x) - 1; Math.round(x) > Math.round(this.header.x) && tempBody.length < bodyLen; x--) {
                         tempBody.unshift({x: x, y: Math.round(a * x + b)});
                     }
@@ -184,9 +184,27 @@ export class Dragon {
                     }
                 }
 
-                if (dx < 0) {
+                if (Math.abs(a) <= 1 && dx < 0) {
                     for (let x = Math.round(newHeader.x) + 1; Math.round(x) < Math.round(this.header.x) && tempBody.length < bodyLen; x++) {
                         tempBody.unshift({x: x, y: Math.round(a * x + b)});
+                    }
+                    for (let i = 0; i < tempBody.length; i++) {
+                        this.body.unshift(tempBody[i]);
+                    }
+                }
+
+                if (Math.abs(a) > 1 && dy > 0) {
+                    for (let y = Math.round(newHeader.y) - 1; Math.round(y) > Math.round(this.header.y) && tempBody.length < bodyLen; y--) {
+                        tempBody.unshift({x: Math.round((y - b) / a), y: y});
+                    }
+                    for (let i = 0; i < tempBody.length; i++) {
+                        this.body.unshift(tempBody[i]);
+                    }
+                }
+
+                if (Math.abs(a) > 1 && dy < 0) {
+                    for (let y = Math.round(newHeader.y) + 1; Math.round(y) < Math.round(this.header.y) && tempBody.length < bodyLen; y++) {
+                        tempBody.unshift({x: Math.round((y - b) / a), y: y});
                     }
                     for (let i = 0; i < tempBody.length; i++) {
                         this.body.unshift(tempBody[i]);
