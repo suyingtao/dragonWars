@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, ComponentRef } from '@angular/core';
 import { Dragon } from './factory/dragon';
 import { Joystick } from './factory/joystick';
 import { JoystickComponent } from './joystick/joystick.component'
+import { fail } from 'assert';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -11,43 +12,70 @@ export class AppComponent {
   @ViewChild('canvas') groud: ElementRef;
   @ViewChild('container') container: ElementRef;
   @ViewChild('joystick') joystick: JoystickComponent;
+
   ctx: any;
   gridSize: number = 20;
   gridColor: string = '#f6f6f6';
-  height: number = 800;
-  width: number = 800;
+  height: number = 600;
+  width: number = 600;
   dragon: Dragon;
-  bot: Dragon;
+  bot: Array<Dragon> = [];
   lastDate: number;
-  x: 200;
-  y: 0;
   screenCenter = {
     x: 0,
     y: 0
   };
-  constructor (){
+  start = false;
+
+  menuVisibility = true;
+  
+  constructor (){}
+
+  initGame() {
+    this.joystick.joystick.init();
     this.dragon = new Dragon(
       'test',
       {x: 150, y: 150},
       0,
       200,
-      [{x: 150, y: 151}, {x: 150, y: 152}, {x: 150, y: 153}, {x: 149, y: 153}, {x: 148, y: 153}, {x: 147, y: 152}, {x: 147, y: 151}],
+      [{x: 150, y: 151}, {x: 150, y: 152}, {x: 150, y: 153}, {x: 149, y: 153}, {x: 148, y: 153}, {x: 147, y: 152}, {x: 147, y: 151},
+        {x: 147, y: 152},{x: 147, y: 153},{x: 147, y: 154},{x: 147, y: 155},{x: 147, y: 156},{x: 147, y: 157},{x: 147, y: 158},{x: 147, y: 159},{x: 147, y: 160},
+        {x: 147, y: 161},{x: 147, y: 162},{x: 147, y: 163},{x: 147, y: 164},{x: 147, y: 165},{x: 147, y: 166}],
       0,
       '#FF4040'
     );
-    this.bot = new Dragon(
-      'bot',
-      {x: 150, y: 160},
-      0,
-      100,
-      [],
-      0,
-      '#000'
-    )
+    this.bot = [];
+    // this.bot.push(new Dragon(
+    //   'bot',
+    //   {x: 150, y: 190},
+    //   280,
+    //   100,
+    //   [{x: 151, y: 190}, {x: 152, y: 190},{x: 153, y: 190},{x: 154, y: 190},{x: 155, y: 190}],
+    //   0,
+    //   '#837261'
+    // ));
+    // this.bot.push(new Dragon(
+    //   'bot',
+    //   {x: 196, y: 190},
+    //   330,
+    //   100,
+    //   [{x: 200, y: 190}, {x: 201, y: 190},{x: 202, y: 190},{x: 203, y: 190},{x: 204, y: 190}],
+    //   0,
+    //   '#3128e1'
+    // ));
+    this.generatorBot();
+    this.generatorBot();
+    this.generatorBot();
+    this.generatorBot();
+    this.generatorBot();
+    this.generatorBot();
+    setInterval(()=>{this.generatorBot();}, 5000);
+    this.render();
   }
 
   ngOnInit() {
     this.ctx = this.groud.nativeElement.getContext('2d');
+
     if (window.devicePixelRatio) {
       this.groud.nativeElement.style.width = this.width + "px";
       this.groud.nativeElement.style.height = this.height + "px";
@@ -55,7 +83,7 @@ export class AppComponent {
       this.groud.nativeElement.width = this.width * window.devicePixelRatio;
       this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
-    this.render();
+
     this.screenCenter = {
       x: this.container.nativeElement.offsetWidth / 2,
       y: this.container.nativeElement.offsetHeight / 2
@@ -94,54 +122,174 @@ export class AppComponent {
     this.update(now - this.lastDate);
     this.renderGroud(this.ctx);
     this.dragon.render(this.ctx);
-    //this.bot.render(this.ctx);
+    if(this.collisionDetection()) {
+      this.gameOver();
+    }
+    for(let i in this.bot) {
+      this.bot[i].render(this.ctx);
+    }
     this.lastDate = now;
-    requestAnimationFrame(this.render.bind(this));
+    if (this.start) {
+      requestAnimationFrame(this.render.bind(this));
+    }
   }
 
   update(space) {
-    // if (this.joystick.joystick.touching) {
-    //   if (Math.abs(this.joystick.joystick.angle - this.dragon.direction) < 180) {
-    //     if (this.joystick.joystick.angle - this.dragon.direction>0) {
-    //     this.dragon.direction += 0.12 * space;
-    //     }
-    //     if (this.joystick.joystick.angle - this.dragon.direction<0) {
-    //     this.dragon.direction -= 0.12 * space;
-    //     }
-    //   }
-    //   if (Math.abs(this.joystick.joystick.angle - this.dragon.direction)>180) {
-    //     if (this.joystick.joystick.angle - this.dragon.direction>0) {
-    //     this.dragon.direction -= 0.12 * space;
-    //     }
-    //     if (this.joystick.joystick.angle - this.dragon.direction<0) {
-    //     this.dragon.direction += 0.12 * space;
-    //     }
-    //   }
-    //   if (this.dragon.direction>360) {
-    //     this.dragon.direction -= 360;
-    //   }
-    //   if (this.dragon.direction<0) {
-    //     this.dragon.direction += 360;
-    //   }
-    // }
     this.dragon.move(this.joystick.joystick.angle, space);
-    //this.bot.move(5, space);
-    // for(let i = this.dragon.body.length - 1; i>0; i--) {
-    //   this.dragon.body[i].x = this.dragon.body[i - 1].x;
-    //   this.dragon.body[i].y = this.dragon.body[i - 1].y;
-    // }
-    // this.dragon.body[0].x = this.dragon.header.x;
-    // this.dragon.body[0].y = this.dragon.header.y;
-    // const moveX = this.dragon.speed * space / 1000 * Math.cos(Math.PI * this.dragon.direction / 180);
-    // const moveY = this.dragon.speed * space / 1000 * Math.sin(Math.PI * this.dragon.direction / 180);
-    // const moveDistance = Math.sqrt(Math.pow(moveX, 2) + Math.pow(moveY, 2));
-    // this.dragon.header.x += moveX;
-    // this.dragon.header.y += moveY;
+    for (let i in this.bot) {
+      this.bot[i].move(this.randomDirection(this.bot[i]), space);
+    }
+  }
+
+  /**
+   * bot 随机方向
+   * @param d 
+   */
+  randomDirection(d: Dragon) {
+    const estimates = 40;
+    const now = Date.now();
+    if(now - d.lastRandomDirc <= 200) return d.direction;
+    if (Math.abs((d.header.x - this.width / 2)) + estimates >= this.width / 2 - d.radius) {
+      let t = Math.random() > 0.5? d.direction + 150 : d.direction - 150;
+
+      t = t > 0 ? t % 360 : 360 + t;
+      d.lastRandomDirc = now;
+      return t;
+    }
+
+    if(Math.abs((d.header.y - this.height / 2)) + estimates >= this.height / 2 - d.radius) {
+      let t = Math.random() > 0.5? d.direction + 150 : d.direction - 150;
+      t = t > 0 ? t % 360 : 360 + t;
+
+      d.lastRandomDirc = now;
+      return t;
+    }
+
+    if (Math.random() >= 0.99) {
+
+      d.lastRandomDirc = now;
+      return Math.random() * 360;
+    }
+
+    return d.direction;
+  }
+
+
+  /**
+   * @desc 碰撞检测
+   */
+  collisionDetection() {
+    // 人撞墙
+    if(this.wallCollisionJudge(this.dragon)) {
+      return true;
+    }
+
+    for(let i = 0; i < this.bot.length; i++) {
+
+      // 机器人撞墙
+      if(this.wallCollisionJudge(this.bot[i])) {
+        this.bot.splice(i, 1);
+        i--;
+        break;
+      }
+
+      // 机器人撞人
+      if(this.dragonCollisionJudge(this.bot[i], this.dragon)) {
+        this.bot.splice(i, 1);
+        i--;
+        break;
+      }
+
+      // 人撞机器人
+      if(this.dragonCollisionJudge(this.dragon, this.bot[i])) {
+        return true;
+      }
+
+      // 机器人撞机器人
+      for(let j = 0; j< this.bot.length; j++) {
+        if (i !== j && this.dragonCollisionJudge(this.bot[i], this.bot[j])) {
+          this.bot.splice(i, 1);
+          i--;
+          break;
+        }
+      }
+
+    }
     
-    // for(let i in this.dragon.body) {
-    //   this.dragon.body[i].x += x;
-    //   this.dragon.body[i].y += y;
-    // }
-    
+    return false;
+  }
+
+  /**
+   * @desc 撞墙检测
+   * @param dragon: Dragon
+   */
+  wallCollisionJudge(dragon: Dragon) {
+    if (Math.abs((dragon.header.x - this.width / 2)) >= this.width / 2 - dragon.radius) {
+      return true;
+    }
+
+    if(Math.abs((dragon.header.y - this.height / 2)) >= this.height / 2 - dragon.radius) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * @desc 龙龙碰撞检测
+   * @param s: Dragon
+   * @param t: Dragon
+   */
+  dragonCollisionJudge(s: Dragon, t: Dragon) {
+    const minD = s.radius + t.radius;
+
+    for(let i = 0; i < t.body.length; i++) {
+      const dx = t.body[i].x - s.header.x;
+      const dy = t.body[i].y - s.header.y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+
+      if (d <= minD) {
+        return true;
+      }
+
+    }
+
+    return false;
+  }
+
+  gameStart() {
+    this.start = true;
+    this.menuVisibility = false;
+    this.initGame();
+  }
+
+  gameOver() {
+    this.start = false;
+    this.menuVisibility = true;
+  }
+
+  generatorBot() {
+    const header = {
+      x: Math.floor(Math.random() * (this.width - 50)) + 70,
+      y: Math.floor(Math.random() * (this.height - 50)) + 50,
+    }
+    const body = [];
+
+    for(let i = 1; i < 20; i++) {
+      body.push({
+        x: header.x - i,
+        y: header.y
+      })
+    }
+
+    this.bot.push(new Dragon(
+      'bot',
+      header,
+      Math.floor(Math.random() * 360),
+      150,
+      body,
+      0,
+      '#' + Math.floor(Math.random() * 0xffffff).toString(16)
+    ));
   }
 }

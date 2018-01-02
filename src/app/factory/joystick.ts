@@ -42,6 +42,10 @@ export class Joystick {
         this.rocker = rocker;
     }
 
+    init() {
+        this.angle = 0;
+    }
+
     moveRocker(x, y) {
         if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) <= this.renderArea.radius - this.rocker.radius) {
             this.rocker.position = {

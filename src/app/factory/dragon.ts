@@ -14,12 +14,13 @@ export class Dragon {
     speed: number;
 
     score: number;
-    radius = 10;
+    radius = 8;
     moveDistance = 0;
     recordPosition: any;
 
+    lastRandomDirc = 0;
     // 转向速度 angle/ms
-    turnSpeed = 0.2;
+    turnSpeed = 0.5;
 
     constructor(
         name: string = 'unknown',
@@ -88,6 +89,9 @@ export class Dragon {
         if (this.direction < 0) {
             this.direction += 360;
         }
+
+        // 立即转向
+        this.direction = angle;
 
         const moveX = parseFloat((this.speed * space / 1000 * Math.cos(Math.PI * this.direction / 180)).toFixed(2));
         const moveY = parseFloat((this.speed * space / 1000 * Math.sin(Math.PI * this.direction / 180)).toFixed(2));
@@ -219,4 +223,6 @@ export class Dragon {
     parseNum(num, n) {
         return parseFloat(num.toFixed(n));
     }
+
+    
 }

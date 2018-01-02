@@ -1,0 +1,14 @@
+<div class="menu" *ngIf="visibility">
+  <h2 class="title">龙之战</h2>
+  <ul class="menu-list">
+    <li class="menu-item" (click)="start()">
+      单人游戏
+    </li>
+    <li class="menu-item" (click)="openRoom()">
+      创建房间
+    </li>
+    <li class="menu-item" (click)="joinGame()">
+      进入房间
+    </li>
+  </ul>
+</div>
