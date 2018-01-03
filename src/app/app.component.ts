@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef, ComponentRef } from '@angular/core';
 import { Dragon } from './factory/dragon';
+import { Position, Food } from './factory/food';
 import { Joystick } from './factory/joystick';
 import { JoystickComponent } from './joystick/joystick.component'
 import { fail } from 'assert';
@@ -16,10 +17,11 @@ export class AppComponent {
   ctx: any;
   gridSize: number = 20;
   gridColor: string = '#f6f6f6';
-  height: number = 600;
-  width: number = 600;
+  height: number = 800;
+  width: number = 800;
   dragon: Dragon;
   bot: Array<Dragon> = [];
+  botTimer;
   lastDate: number;
   screenCenter = {
     x: 0,
@@ -29,6 +31,8 @@ export class AppComponent {
 
   menuVisibility = true;
   
+  // foods
+  foods: Array<Food> = [];
   constructor (){}
 
   initGame() {
@@ -45,31 +49,25 @@ export class AppComponent {
       '#FF4040'
     );
     this.bot = [];
-    // this.bot.push(new Dragon(
-    //   'bot',
-    //   {x: 150, y: 190},
-    //   280,
-    //   100,
-    //   [{x: 151, y: 190}, {x: 152, y: 190},{x: 153, y: 190},{x: 154, y: 190},{x: 155, y: 190}],
-    //   0,
-    //   '#837261'
-    // ));
-    // this.bot.push(new Dragon(
-    //   'bot',
-    //   {x: 196, y: 190},
-    //   330,
-    //   100,
-    //   [{x: 200, y: 190}, {x: 201, y: 190},{x: 202, y: 190},{x: 203, y: 190},{x: 204, y: 190}],
-    //   0,
-    //   '#3128e1'
-    // ));
-    this.generatorBot();
-    this.generatorBot();
-    this.generatorBot();
-    this.generatorBot();
-    this.generatorBot();
-    this.generatorBot();
-    setInterval(()=>{this.generatorBot();}, 5000);
+    this.foods = [];
+
+    for(let i = 0; i < 10; i++) {
+      this.generatorBot();
+      this.generatorFood();
+    }
+
+    for(let i = 0; i < 100; i++) {
+      this.generatorFood();
+    }
+
+    clearInterval(this.botTimer);
+    this.botTimer = setInterval(() => {
+      this.generatorBot();
+      for(let i = 0; i < 20; i++) {
+        this.generatorFood();
+      }
+    }, 5000);
+
     this.render();
   }
 
@@ -115,20 +113,29 @@ export class AppComponent {
 
   render() {
     this.clearCtx(this.ctx);
+
     const now = Date.now();
     if(!this.lastDate) {
       this.lastDate = now;
     }
     this.update(now - this.lastDate);
+
     this.renderGroud(this.ctx);
     this.dragon.render(this.ctx);
-    if(this.collisionDetection()) {
-      this.gameOver();
-    }
     for(let i in this.bot) {
       this.bot[i].render(this.ctx);
     }
+
+    this.foods.forEach((food)=>{
+      food.render(this.ctx);
+    })
+
+    if(this.collisionDetection()) {
+      this.gameOver();
+    }
+    
     this.lastDate = now;
+
     if (this.start) {
       requestAnimationFrame(this.render.bind(this));
     }
@@ -180,40 +187,56 @@ export class AppComponent {
    */
   collisionDetection() {
     // 人撞墙
-    if(this.wallCollisionJudge(this.dragon)) {
+    if (this.wallCollisionJudge(this.dragon)) {
+      this.dragonDie(this.dragon);
       return true;
     }
 
-    for(let i = 0; i < this.bot.length; i++) {
-
+    // 人吃食物
+    for (let i = 0; i < this.foods.length; i++) {
+      if (this.eatJudge(this.dragon, this.foods[i])) {
+        this.eat(this.dragon, i);
+        i--;
+      }
+    }
+    for (let i = 0; i < this.bot.length; i++) {
+      // 机器人 eat food
+      for (let j = 0; j < this.foods.length; j++) {
+        if (this.eatJudge(this.bot[i], this.foods[j])) {
+          this.eat(this.bot[i], j);
+          j--;
+        }
+      }
       // 机器人撞墙
-      if(this.wallCollisionJudge(this.bot[i])) {
+      if (this.wallCollisionJudge(this.bot[i])) {
+        this.dragonDie(this.bot[i]);
         this.bot.splice(i, 1);
         i--;
         break;
       }
 
       // 机器人撞人
-      if(this.dragonCollisionJudge(this.bot[i], this.dragon)) {
+      if (this.dragonCollisionJudge(this.bot[i], this.dragon)) {
+        this.dragonDie(this.bot[i]);
         this.bot.splice(i, 1);
         i--;
         break;
       }
 
       // 人撞机器人
-      if(this.dragonCollisionJudge(this.dragon, this.bot[i])) {
+      if (this.dragonCollisionJudge(this.dragon, this.bot[i])) {
         return true;
       }
 
       // 机器人撞机器人
-      for(let j = 0; j< this.bot.length; j++) {
+      for (let j = 0; j< this.bot.length; j++) {
         if (i !== j && this.dragonCollisionJudge(this.bot[i], this.bot[j])) {
+          this.dragonDie(this.bot[i]);
           this.bot.splice(i, 1);
           i--;
           break;
         }
       }
-
     }
     
     return false;
@@ -291,5 +314,59 @@ export class AppComponent {
       0,
       '#' + Math.floor(Math.random() * 0xffffff).toString(16)
     ));
+  }
+
+  generatorFood(p?: Position, energy?: number) {
+    if (!p){
+      p = {
+        x: Math.floor(Math.random() * this.width),
+        y: Math.floor(Math.random() * this.height)
+      }
+    }
+
+    if (!energy) {
+      energy = Math.ceil(Math.random() * 10);
+    }
+
+    this.foods.push(new Food(p, energy));
+  }
+
+  addFoods(f: Array<Food>) {
+    f.forEach((fd)=>{
+      this.foods.push(fd);
+    });
+  }
+
+  
+
+  eatJudge(dragon: Dragon, food: Food) {
+    const dx = dragon.header.x - food.position.x;
+    const dy = dragon.header.y - food.position.y;
+    const d = Math.sqrt(dx * dx + dy * dy);
+
+    if(d < dragon.radius + food.radius) {
+      return true;
+    }
+
+    return false;
+  }
+
+  eat(dragon: Dragon, foodIndex: number) {
+    const energy = this.foods[foodIndex].energy;
+    this.foods.splice(foodIndex, 1);
+    dragon.grow(dragon.body[dragon.body.length - 1], energy);
+  }
+
+  dragonDie(dragon: Dragon) {
+    let positons = dragon.die();
+    
+    const energy = Math.ceil(positons.length / 20);
+
+    positons = positons.filter((v, i) => {
+      return i % (energy * 3) === 0;
+    })
+    positons.forEach((p) => {
+       this.generatorFood(p, energy);
+    })
   }
 }

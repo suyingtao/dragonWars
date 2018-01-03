@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RankComponent implements OnInit {
 
+  score = 0;
   constructor() { }
 
   ngOnInit() {

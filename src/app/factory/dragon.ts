@@ -5,22 +5,26 @@ interface Position {
 
 export class Dragon {
     name: string;
+
     header: Position;
     body: Array<Position>;
+    alive = true;
+    radius = 8;
+
     color: string;
-    direction: number;
+    headerColor: string;
 
     // 单位像素/s
     speed: number;
+    direction: number;
 
-    score: number;
-    radius = 8;
-    moveDistance = 0;
-    recordPosition: any;
-
-    lastRandomDirc = 0;
     // 转向速度 angle/ms
     turnSpeed = 0.5;
+    lastRandomDirc = 0;
+    moveDistance = 0;
+
+    // 得分
+    score: number;
 
     constructor(
         name: string = 'unknown',
@@ -29,7 +33,8 @@ export class Dragon {
         speed: number,
         body: Array<Position>,
         score: number,
-        color: string
+        color: string,
+        headerColor: string = 'red',
     ) {
         this.name = name;
         this.header = header;
@@ -38,9 +43,14 @@ export class Dragon {
         this.body = body;
         this.score = score;
         this.color = color;
+        this.headerColor = headerColor;
     }
 
     render(ctx) {
+        if (!this.alive) {
+            return ;
+        }
+
         // draw body
         ctx.beginPath();
         ctx.moveTo(this.header.x, this.header.y);
@@ -56,7 +66,7 @@ export class Dragon {
 
         // draw header
         ctx.beginPath();
-        ctx.fillStyle = 'blue';
+        ctx.fillStyle = this.headerColor;
         ctx.arc(this.header.x, this.header.y, this.radius, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath();
@@ -224,5 +234,16 @@ export class Dragon {
         return parseFloat(num.toFixed(n));
     }
 
-    
+    grow(p: Position, energy: number = 1) {
+        for (let i = 0; i < energy; i++) {
+            this.body.push(p);
+        }
+        this.score += energy;
+    }
+
+    die() {
+        this.alive = false;
+
+        return [].concat(this.header, this.body);
+    }
 }
