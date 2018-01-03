@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-rank',
@@ -7,7 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RankComponent implements OnInit {
 
-  score = 0;
+  @Input() score = 0;
+
   constructor() { }
 
   ngOnInit() {

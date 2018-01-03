@@ -24,7 +24,6 @@ export class MenuComponent implements OnInit {
   }
 
   start() {
-    console.log(1);
     this.hideMenu();
     this.startGame.emit();
   }

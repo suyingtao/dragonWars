@@ -2,8 +2,8 @@ import { Component, ViewChild, ElementRef, ComponentRef } from '@angular/core';
 import { Dragon } from './factory/dragon';
 import { Position, Food } from './factory/food';
 import { Joystick } from './factory/joystick';
-import { JoystickComponent } from './joystick/joystick.component'
-import { fail } from 'assert';
+import { JoystickComponent } from './joystick/joystick.component';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -50,21 +50,21 @@ export class AppComponent {
     );
     this.bot = [];
     this.foods = [];
+    this.lastDate = null;
 
     for(let i = 0; i < 10; i++) {
       this.generatorBot();
-      this.generatorFood();
     }
 
-    for(let i = 0; i < 100; i++) {
+    for(let i = 0; i < 10; i++) {
       this.generatorFood();
     }
 
     clearInterval(this.botTimer);
     this.botTimer = setInterval(() => {
-      this.generatorBot();
-      for(let i = 0; i < 20; i++) {
+      for(let i = 0; i < 15; i++) {
         this.generatorFood();
+        this.generatorBot();
       }
     }, 5000);
 
@@ -153,9 +153,11 @@ export class AppComponent {
    * @param d 
    */
   randomDirection(d: Dragon) {
-    const estimates = 40;
+    const estimates = 70;
     const now = Date.now();
+
     if(now - d.lastRandomDirc <= 200) return d.direction;
+
     if (Math.abs((d.header.x - this.width / 2)) + estimates >= this.width / 2 - d.radius) {
       let t = Math.random() > 0.5? d.direction + 150 : d.direction - 150;
 
@@ -325,7 +327,7 @@ export class AppComponent {
     }
 
     if (!energy) {
-      energy = Math.ceil(Math.random() * 10);
+      energy = Math.ceil(Math.random() * 5);
     }
 
     this.foods.push(new Food(p, energy));
@@ -360,10 +362,10 @@ export class AppComponent {
   dragonDie(dragon: Dragon) {
     let positons = dragon.die();
     
-    const energy = Math.ceil(positons.length / 20);
+    const energy = Math.ceil(positons.length / 25);
 
     positons = positons.filter((v, i) => {
-      return i % (energy * 3) === 0;
+      return i % (energy * 5) === 0;
     })
     positons.forEach((p) => {
        this.generatorFood(p, energy);

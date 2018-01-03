@@ -74,6 +74,11 @@ export class Dragon {
     }
 
     move(angle: number, space: number) {
+        const tempRadius = Math.floor(7 + this.body.length / 100);
+        this.radius = tempRadius > 15 ? 15 : tempRadius;
+
+        this.speed = 50 + 900 / this.radius;
+
         // 转向速度 angle/ms
         const turnSpeed = this.turnSpeed;
 
@@ -235,10 +240,15 @@ export class Dragon {
     }
 
     grow(p: Position, energy: number = 1) {
+        this.score += energy;
+
+        if (this.body.length >= 200) {
+            return;
+        }
         for (let i = 0; i < energy; i++) {
             this.body.push(p);
         }
-        this.score += energy;
+
     }
 
     die() {
