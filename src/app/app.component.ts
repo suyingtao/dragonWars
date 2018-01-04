@@ -44,7 +44,7 @@ export class AppComponent {
       200,
       [{x: 150, y: 151}, {x: 150, y: 152}, {x: 150, y: 153}, {x: 149, y: 153}, {x: 148, y: 153}, {x: 147, y: 152}, {x: 147, y: 151},
         {x: 147, y: 152},{x: 147, y: 153},{x: 147, y: 154},{x: 147, y: 155},{x: 147, y: 156},{x: 147, y: 157},{x: 147, y: 158},{x: 147, y: 159},{x: 147, y: 160},
-        {x: 147, y: 161},{x: 147, y: 162},{x: 147, y: 163},{x: 147, y: 164},{x: 147, y: 165},{x: 147, y: 166}],
+        {x: 147, y: 161},{x: 147, y: 162}],
       0,
       '#FF4040'
     );
@@ -271,6 +271,14 @@ export class AppComponent {
     }
 
     const minD = s.radius + t.radius;
+
+    const hdx = t.header.x - s.header.x;
+    const hdy = t.header.y - s.header.y;
+    const hd = Math.sqrt(hdx * hdx + hdy * hdy);
+    if (hd <= minD && s.body.length < t.body.length) {
+      debugger;
+      return true;
+    }
 
     for(let i = 0; i < t.body.length; i++) {
       const dx = t.body[i].x - s.header.x;
