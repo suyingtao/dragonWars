@@ -19,12 +19,17 @@ export class Dragon {
     direction: number;
 
     // 转向速度 angle/ms
-    turnSpeed = 0.5;
+    turnSpeed = 1;
     lastRandomDirc = 0;
     moveDistance = 0;
 
     // 得分
     score: number;
+
+    // 无敌
+    invincible = false;
+    invincibleTime;
+    invincibleTimer;
 
     constructor(
         name: string = 'unknown',
@@ -71,10 +76,17 @@ export class Dragon {
         ctx.fill();
         ctx.closePath();
 
+        ctx.beginPath();
+        ctx.fillStyle = 'white';
+        ctx.arc(this.header.x - this.radius + 2, this.header.y, 2, 0, 2 * Math.PI);
+        ctx.arc(this.header.x + this.radius - 2, this.header.y, 2, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
     }
 
     move(angle: number, space: number) {
         const tempRadius = Math.floor(7 + this.body.length / 100);
+
         this.radius = tempRadius > 15 ? 15 : tempRadius;
 
         this.speed = 50 + 900 / this.radius;
@@ -106,7 +118,7 @@ export class Dragon {
         }
 
         // 立即转向
-        this.direction = angle;
+        // this.direction = angle;
 
         const moveX = parseFloat((this.speed * space / 1000 * Math.cos(Math.PI * this.direction / 180)).toFixed(2));
         const moveY = parseFloat((this.speed * space / 1000 * Math.sin(Math.PI * this.direction / 180)).toFixed(2));

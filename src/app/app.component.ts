@@ -156,14 +156,14 @@ export class AppComponent {
     const estimates = 70;
     const now = Date.now();
 
-    if(now - d.lastRandomDirc <= 200) return d.direction;
+    if(now - d.lastRandomDirc <= 300) return d.direction;
 
     if (Math.abs((d.header.x - this.width / 2)) + estimates >= this.width / 2 - d.radius) {
       let t = Math.random() > 0.5? d.direction + 150 : d.direction - 150;
 
       t = t > 0 ? t % 360 : 360 + t;
       d.lastRandomDirc = now;
-      return t;
+      d.direction = t;
     }
 
     if(Math.abs((d.header.y - this.height / 2)) + estimates >= this.height / 2 - d.radius) {
@@ -171,13 +171,13 @@ export class AppComponent {
       t = t > 0 ? t % 360 : 360 + t;
 
       d.lastRandomDirc = now;
-      return t;
+      d.direction = t;
     }
 
     if (Math.random() >= 0.99) {
 
       d.lastRandomDirc = now;
-      return Math.random() * 360;
+      d.direction = Math.random() * 360;
     }
 
     return d.direction;
