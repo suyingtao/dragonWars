@@ -13,6 +13,7 @@ export class Food {
         this.position = position;
         this.energy = energy;
         this.radius = Math.floor(3 + energy * 0.4);
+        this.color = '#' + Math.floor(Math.random() * 0xffffff).toString(16);
     }
 
     render(ctx) {

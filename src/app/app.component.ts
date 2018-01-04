@@ -266,6 +266,10 @@ export class AppComponent {
    * @param t: Dragon
    */
   dragonCollisionJudge(s: Dragon, t: Dragon) {
+    if (s.invincible || t.invincible) {
+      return false;
+    }
+
     const minD = s.radius + t.radius;
 
     for(let i = 0; i < t.body.length; i++) {

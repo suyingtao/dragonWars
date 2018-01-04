@@ -1,3 +1,5 @@
+import { setTimeout } from "timers";
+
 interface Position {
     x: number;
     y: number;
@@ -27,9 +29,9 @@ export class Dragon {
     score: number;
 
     // 无敌
-    invincible = false;
-    invincibleTime;
-    invincibleTimer;
+    invincible = true;
+    bornInvincibleTime = 2;
+    bornInvincibleTimer;
 
     constructor(
         name: string = 'unknown',
@@ -76,12 +78,90 @@ export class Dragon {
         ctx.fill();
         ctx.closePath();
 
+        // eyes
         ctx.beginPath();
         ctx.fillStyle = 'white';
-        ctx.arc(this.header.x - this.radius + 2, this.header.y, 2, 0, 2 * Math.PI);
-        ctx.arc(this.header.x + this.radius - 2, this.header.y, 2, 0, 2 * Math.PI);
+        ctx.arc(
+            this.header.x + (this.radius - 2) * Math.cos(Math.PI * (this.direction - 90) / 180),
+            this.header.y - (this.radius - 2) * Math.sin(Math.PI * (this.direction - 90) / 180),
+            2,
+            0,
+            2 * Math.PI
+        );
+        ctx.arc(
+            this.header.x + (this.radius - 2) * Math.cos(Math.PI * (this.direction + 90) / 180),
+            this.header.y - (this.radius - 2) * Math.sin(Math.PI * (this.direction + 90) / 180),
+            2,
+            0,
+            2 * Math.PI
+        );
         ctx.fill();
         ctx.closePath();
+
+        ctx.beginPath();
+        ctx.fillStyle = 'black';
+        ctx.arc(
+            this.header.x + (this.radius - 2) * Math.cos(Math.PI * (this.direction - 90) / 180),
+            this.header.y - (this.radius - 2) * Math.sin(Math.PI * (this.direction - 90) / 180),
+            1,
+            0,
+            2 * Math.PI
+        );
+        ctx.arc(
+            this.header.x + (this.radius - 2) * Math.cos(Math.PI * (this.direction + 90) / 180),
+            this.header.y - (this.radius - 2) * Math.sin(Math.PI * (this.direction + 90) / 180),
+            1,
+            0,
+            2 * Math.PI
+        );
+        ctx.fill();
+        ctx.closePath();
+
+        // mouse
+        ctx.beginPath();
+        ctx.fillStyle = 'white';
+        ctx.arc(
+            this.header.x + (this.radius - 2) * Math.cos(Math.PI * (this.direction) / 180),
+            this.header.y - (this.radius - 2) * Math.sin(Math.PI * (this.direction) / 180),
+            1,
+            0,
+            2 * Math.PI
+        );
+        ctx.fill();
+        ctx.closePath();
+
+        // invincible
+        if (this.invincible && !this.bornInvincibleTimer) {
+            this.bornInvincibleTimer = setTimeout(() => {
+                this.invincible = false;
+            }, this.bornInvincibleTime * 1000);
+        }
+
+        if (this.invincible) {
+            ctx.beginPath();
+            let maxD = 0;
+            for (let i = 0; i < this.body.length; i++) {
+                const dx = this.body[i].x - this.header.x;
+                const dy = this.body[i].y - this.header.y;
+                const d = Math.sqrt(dx * dx + dy * dy);
+                if (d > maxD) {
+                    maxD = d;
+                }
+            }
+            ctx.arc(
+                this.header.x,
+                this.header.y,
+                this.radius + maxD + 5,
+                0,
+                2 * Math.PI
+            );
+            ctx.fillStyle = 'rgba(230, 230, 45, 0.1)';
+            ctx.fill();
+            ctx.closePath();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = 'rgba(250, 250, 50, 0.5)';
+            ctx.stroke();
+        }
     }
 
     move(angle: number, space: number) {
