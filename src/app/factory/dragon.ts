@@ -1,5 +1,3 @@
-import { setTimeout } from "timers";
-
 interface Position {
     x: number;
     y: number;

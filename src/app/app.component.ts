@@ -82,10 +82,6 @@ export class AppComponent {
       this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
-    this.screenCenter = {
-      x: this.container.nativeElement.offsetWidth / 2,
-      y: this.container.nativeElement.offsetHeight / 2
-    }
   }
 
   clearCtx(ctx) {
@@ -112,6 +108,11 @@ export class AppComponent {
   }
 
   render() {
+    this.screenCenter = {
+      x: this.container.nativeElement.offsetWidth / 2,
+      y: this.container.nativeElement.offsetHeight / 2
+    }
+
     this.clearCtx(this.ctx);
 
     const now = Date.now();
@@ -276,7 +277,6 @@ export class AppComponent {
     const hdy = t.header.y - s.header.y;
     const hd = Math.sqrt(hdx * hdx + hdy * hdy);
     if (hd <= minD && s.body.length < t.body.length) {
-      debugger;
       return true;
     }
 
