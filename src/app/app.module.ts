@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { JoystickComponent } from './joystick/joystick.component';
 import { MenuComponent } from './menu/menu.component';
 import { RankComponent } from './rank/rank.component';
+import { SpeedUpComponent } from './speed-up/speed-up.component';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { RankComponent } from './rank/rank.component';
     AppComponent,
     JoystickComponent,
     MenuComponent,
-    RankComponent
+    RankComponent,
+    SpeedUpComponent
   ],
   imports: [
     BrowserModule

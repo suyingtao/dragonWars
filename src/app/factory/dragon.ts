@@ -19,7 +19,7 @@ export class Dragon {
     direction: number;
 
     // 转向速度 angle/ms
-    turnSpeed = 1;
+    turnSpeed = 0.5;
     lastRandomDirc = 0;
     moveDistance = 0;
 
@@ -167,7 +167,7 @@ export class Dragon {
 
         this.radius = tempRadius > 15 ? 15 : tempRadius;
 
-        this.speed = 50 + 900 / this.radius;
+        this.speed = 30 + 900 / this.radius;
 
         // 转向速度 angle/ms
         const turnSpeed = this.turnSpeed;
@@ -175,17 +175,41 @@ export class Dragon {
         if (Math.abs(angle - this.direction) < 180) {
             if (angle - this.direction > 0) {
                 this.direction += turnSpeed * space;
+                if (this.direction > angle) {
+                    this.direction = angle;
+                }
             }
             if (angle - this.direction < 0) {
                 this.direction -= turnSpeed * space;
+                if (this.direction < angle) {
+                    this.direction = angle;
+                }
             }
         }
         if (Math.abs(angle - this.direction) > 180) {
             if (angle - this.direction > 0) {
                 this.direction -= turnSpeed * space;
+                if (this.direction > 360) {
+                    this.direction -= 360;
+                }
+                if (this.direction < 0) {
+                    this.direction += 360;
+                }
+                if (this.direction < angle) {
+                    this.direction = angle;
+                }
             }
             if (angle - this.direction < 0) {
                 this.direction += turnSpeed * space;
+                if (this.direction > 360) {
+                    this.direction -= 360;
+                }
+                if (this.direction < 0) {
+                    this.direction += 360;
+                }
+                if (this.direction > angle) {
+                    this.direction = angle;
+                }
             }
         }
         if (this.direction > 360) {

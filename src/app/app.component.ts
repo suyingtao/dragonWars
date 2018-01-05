@@ -3,16 +3,20 @@ import { Dragon } from './factory/dragon';
 import { Position, Food } from './factory/food';
 import { Joystick } from './factory/joystick';
 import { JoystickComponent } from './joystick/joystick.component';
+import { SpeedUp } from './factory/speedUp';
+import { SpeedUpComponent } from './speed-up/speed-up.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
 export class AppComponent {
   @ViewChild('canvas') groud: ElementRef;
   @ViewChild('container') container: ElementRef;
   @ViewChild('joystick') joystick: JoystickComponent;
+  @ViewChild('speedUp') speedUp: SpeedUpComponent;
 
   ctx: any;
   gridSize: number = 20;
@@ -31,12 +35,16 @@ export class AppComponent {
 
   menuVisibility = true;
   
+  // 加速系数
+  speedUpCoefficient = 1.3;
+
   // foods
   foods: Array<Food> = [];
   constructor (){}
 
   initGame() {
     this.joystick.joystick.init();
+    this.speedUp.speedUp.init();
     this.dragon = new Dragon(
       'test',
       {x: 150, y: 150},
@@ -143,7 +151,7 @@ export class AppComponent {
   }
 
   update(space) {
-    this.dragon.move(this.joystick.joystick.angle, space);
+    this.dragon.move(this.joystick.joystick.angle, this.speedUp.speedUp.touching ? space * this.speedUpCoefficient : space);
     for (let i in this.bot) {
       this.bot[i].move(this.randomDirection(this.bot[i]), space);
     }
