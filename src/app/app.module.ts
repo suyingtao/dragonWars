@@ -8,6 +8,7 @@ import { MenuComponent } from './menu/menu.component';
 import { RankComponent } from './rank/rank.component';
 import { SpeedUpComponent } from './speed-up/speed-up.component';
 
+import { WsService } from './ws/ws.service';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,7 @@ import { SpeedUpComponent } from './speed-up/speed-up.component';
   imports: [
     BrowserModule
   ],
-  providers: [],
+  providers: [WsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,5 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { Joystick } from '../factory/joystick';
+import { WsService } from '../ws/ws.service';
+
 @Component({
   selector: 'app-joystick',
   templateUrl: './joystick.component.html',
@@ -10,7 +12,9 @@ export class JoystickComponent implements OnInit {
   joystick: Joystick;
   ctx: any;
 
-  constructor() {
+  @Input() mode = 0;
+
+  constructor(private wsService: WsService) {
     this.joystick = new Joystick();
   }
 
@@ -26,6 +30,9 @@ export class JoystickComponent implements OnInit {
         break;
       case 'touchmove':
         this.joystick.handleTouchmove(event);
+        if (this.mode === 1) {
+          this.wsService.changeDirc(this.joystick.angle);
+        }
         break;
       case 'touchend':
         this.joystick.handleTouchend(event);

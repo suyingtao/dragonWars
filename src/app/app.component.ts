@@ -5,7 +5,7 @@ import { Joystick } from './factory/joystick';
 import { JoystickComponent } from './joystick/joystick.component';
 import { SpeedUp } from './factory/speedUp';
 import { SpeedUpComponent } from './speed-up/speed-up.component';
-
+import { WsService } from './ws/ws.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -32,6 +32,7 @@ export class AppComponent {
     y: 0
   };
   start = false;
+  mode = 0;
 
   menuVisibility = true;
   
@@ -40,7 +41,9 @@ export class AppComponent {
 
   // foods
   foods: Array<Food> = [];
-  constructor (){}
+
+  constructor (private wsService: WsService){
+  }
 
   initGame() {
     this.joystick.joystick.init();
@@ -79,6 +82,43 @@ export class AppComponent {
     this.render();
   }
 
+  initOnlineGame() {
+    this.joystick.joystick.init();
+    this.speedUp.speedUp.init();
+    // this.dragon = new Dragon(
+    //   'test',
+    //   {x: 150, y: 150},
+    //   0,
+    //   200,
+    //   [{x: 150, y: 151}, {x: 150, y: 152}, {x: 150, y: 153}, {x: 149, y: 153}, {x: 148, y: 153}, {x: 147, y: 152}, {x: 147, y: 151},
+    //     {x: 147, y: 152},{x: 147, y: 153},{x: 147, y: 154},{x: 147, y: 155},{x: 147, y: 156},{x: 147, y: 157},{x: 147, y: 158},{x: 147, y: 159},{x: 147, y: 160},
+    //     {x: 147, y: 161},{x: 147, y: 162}],
+    //   0,
+    //   '#FF4040'
+    // );
+    this.dragon = this.wsService.dragons[this.wsService.id];
+    this.bot = [];
+    this.foods = [];
+    this.lastDate = null;
+    // for(let i = 0; i < 10; i++) {
+    //   this.generatorBot();
+    // }
+
+    // for(let i = 0; i < 10; i++) {
+    //   this.generatorFood();
+    // }
+
+    // clearInterval(this.botTimer);
+    // this.botTimer = setInterval(() => {
+    //   for(let i = 0; i < 15; i++) {
+    //     this.generatorFood();
+    //     this.generatorBot();
+    //   }
+    // }, 5000);
+
+    this.render();    
+  }
+
   ngOnInit() {
     this.ctx = this.groud.nativeElement.getContext('2d');
 
@@ -96,8 +136,8 @@ export class AppComponent {
     ctx.clearRect(0, 0, this.width, this.height);
   }
 
-  renderGroud(ctx) {
-    this.groud.nativeElement.style.transform = 'translate(' + (this.screenCenter.x - this.dragon.header.x) + 'px,' + (this.screenCenter.y - this.dragon.header.y) + 'px)';
+  renderGroud(ctx, position: Position) {
+    this.groud.nativeElement.style.transform = 'translate(' + (this.screenCenter.x - position.x) + 'px,' + (this.screenCenter.y - position.y) + 'px)';
     ctx.lineWidth = 1;
     for(let x = 0; x < this.height / this.gridSize; x++) {
       ctx.beginPath();
@@ -115,6 +155,45 @@ export class AppComponent {
     }
   }
 
+  onlieRender() {
+    this.screenCenter = {
+      x: this.container.nativeElement.offsetWidth / 2,
+      y: this.container.nativeElement.offsetHeight / 2
+    }
+
+    this.clearCtx(this.ctx);
+
+    const now = Date.now();
+    if(!this.lastDate) {
+      this.lastDate = now;
+    }
+    // this.update(now - this.lastDate);
+
+    this.renderGroud(this.ctx, this.wsService.dragons[this.wsService.id].header);
+    // this.dragon.render(this.ctx);
+    // for(let i in this.bot) {
+    //   this.bot[i].render(this.ctx);
+    // }
+    
+    // this.foods.forEach((food)=>{
+    //   food.render(this.ctx);
+    // })
+    for(let i in this.wsService.dragons) {
+      
+      if (this.wsService.dragons[i]) {
+        this.renderDragon(this.ctx, this.wsService.dragons[i]);
+      }
+    }
+    // if(this.collisionDetection()) {
+    //   this.gameOver();
+    // }
+    
+    this.lastDate = now;
+
+    if (this.start) {
+      requestAnimationFrame(this.render.bind(this));
+    }
+  }
   render() {
     this.screenCenter = {
       x: this.container.nativeElement.offsetWidth / 2,
@@ -129,12 +208,12 @@ export class AppComponent {
     }
     this.update(now - this.lastDate);
 
-    this.renderGroud(this.ctx);
+    this.renderGroud(this.ctx, this.dragon.header);
     this.dragon.render(this.ctx);
     for(let i in this.bot) {
       this.bot[i].render(this.ctx);
     }
-
+    
     this.foods.forEach((food)=>{
       food.render(this.ctx);
     })
@@ -147,6 +226,117 @@ export class AppComponent {
 
     if (this.start) {
       requestAnimationFrame(this.render.bind(this));
+    }
+  }
+
+  renderDragon(ctx, dragon) {
+    if (!dragon.alive) {
+        return ;
+    }
+
+    // draw body
+    ctx.beginPath();
+    ctx.moveTo(dragon.header.x, dragon.header.y);
+    dragon.body.forEach((position, index) => {
+        ctx.lineTo(position.x, position.y);
+    });
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = dragon.radius * 2;
+    ctx.strokeStyle = dragon.color;
+    ctx.stroke();
+    ctx.closePath();
+
+    // draw header
+    ctx.beginPath();
+    ctx.fillStyle = dragon.headerColor;
+    ctx.arc(dragon.header.x, dragon.header.y, dragon.radius, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.closePath();
+
+    // eyes
+    ctx.beginPath();
+    ctx.fillStyle = 'white';
+    ctx.arc(
+        dragon.header.x + (dragon.radius - 2) * Math.cos(Math.PI * (dragon.direction - 90) / 180),
+        dragon.header.y - (dragon.radius - 2) * Math.sin(Math.PI * (dragon.direction - 90) / 180),
+        2,
+        0,
+        2 * Math.PI
+    );
+    ctx.arc(
+        dragon.header.x + (dragon.radius - 2) * Math.cos(Math.PI * (dragon.direction + 90) / 180),
+        dragon.header.y - (dragon.radius - 2) * Math.sin(Math.PI * (dragon.direction + 90) / 180),
+        2,
+        0,
+        2 * Math.PI
+    );
+    ctx.fill();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.fillStyle = 'black';
+    ctx.arc(
+        dragon.header.x + (dragon.radius - 2) * Math.cos(Math.PI * (dragon.direction - 90) / 180),
+        dragon.header.y - (dragon.radius - 2) * Math.sin(Math.PI * (dragon.direction - 90) / 180),
+        1,
+        0,
+        2 * Math.PI
+    );
+    ctx.arc(
+        dragon.header.x + (dragon.radius - 2) * Math.cos(Math.PI * (dragon.direction + 90) / 180),
+        dragon.header.y - (dragon.radius - 2) * Math.sin(Math.PI * (dragon.direction + 90) / 180),
+        1,
+        0,
+        2 * Math.PI
+    );
+    ctx.fill();
+    ctx.closePath();
+
+    // mouse
+    ctx.beginPath();
+    ctx.fillStyle = 'white';
+    ctx.arc(
+        dragon.header.x + (dragon.radius - 2) * Math.cos(Math.PI * (dragon.direction) / 180),
+        dragon.header.y - (dragon.radius - 2) * Math.sin(Math.PI * (dragon.direction) / 180),
+        1,
+        0,
+        2 * Math.PI
+    );
+    ctx.fill();
+    ctx.closePath();
+
+    // invincible
+    if (dragon.invincible && !dragon.bornInvincibleTimer) {
+        dragon.bornInvincibleTimer = setTimeout(() => {
+            dragon.invincible = false;
+        }, dragon.bornInvincibleTime * 1000);
+    }
+
+    if (dragon.invincible) {
+        ctx.beginPath();
+        let maxD = 0;
+        for (let i = 0; i < dragon.body.length; i++) {
+            const dx = dragon.body[i].x - dragon.header.x;
+            const dy = dragon.body[i].y - dragon.header.y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d > maxD) {
+                maxD = d;
+            }
+        }
+        ctx.arc(
+            dragon.header.x,
+            dragon.header.y,
+            dragon.radius + maxD + 5,
+            0,
+            2 * Math.PI
+        );
+        ctx.fillStyle = 'rgba(230, 230, 45, 0.1)';
+        ctx.fill();
+        ctx.closePath();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(250, 250, 50, 0.5)';
+        ctx.stroke();
     }
   }
 
@@ -305,7 +495,17 @@ export class AppComponent {
   gameStart() {
     this.start = true;
     this.menuVisibility = false;
-    this.initGame();
+
+    if (this.mode === 1) {
+      this.wsService.joinGame().subscribe(()=>{
+        console.log(1);
+        this.initOnlineGame();
+      });
+    }
+    
+    else {
+      this.initGame();
+    }
   }
 
   gameOver() {
