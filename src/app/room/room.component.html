@@ -1,0 +1,9 @@
+<div class="room">
+  <h1>房间号：{{wsService.roomID}} </h1>
+  <ul class="userList">
+    <li *ngFor="let user of userList;let i = index" class="userItem">
+      {{i + 1}} {{user.userName}}
+    </li>
+  </ul>
+  <div *ngIf="wsService.roomMaster" (click)="startGame()" class="startBtn"> start </div>
+</div>

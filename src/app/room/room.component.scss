@@ -1,0 +1,29 @@
+.room {
+    padding-top: 10px;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background-color: #fff;
+    color: #000;
+    text-align: center;
+    .userList {
+        margin-top: 10px;
+    }
+    .userItem {
+        line-height: 30px;
+        height: 30px;
+        font-size: 18px;
+    }
+    .startBtn {
+        height: 30px;
+        width: 50px;
+        background-color: #eee;
+        margin: 0 auto;
+        &:active {
+            background-color: #aaa;
+        }
+    }
+}

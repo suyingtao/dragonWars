@@ -85,38 +85,7 @@ export class AppComponent {
   initOnlineGame() {
     this.joystick.joystick.init();
     this.speedUp.speedUp.init();
-    // this.dragon = new Dragon(
-    //   'test',
-    //   {x: 150, y: 150},
-    //   0,
-    //   200,
-    //   [{x: 150, y: 151}, {x: 150, y: 152}, {x: 150, y: 153}, {x: 149, y: 153}, {x: 148, y: 153}, {x: 147, y: 152}, {x: 147, y: 151},
-    //     {x: 147, y: 152},{x: 147, y: 153},{x: 147, y: 154},{x: 147, y: 155},{x: 147, y: 156},{x: 147, y: 157},{x: 147, y: 158},{x: 147, y: 159},{x: 147, y: 160},
-    //     {x: 147, y: 161},{x: 147, y: 162}],
-    //   0,
-    //   '#FF4040'
-    // );
-    this.dragon = this.wsService.dragons[this.wsService.id];
-    this.bot = [];
-    this.foods = [];
-    this.lastDate = null;
-    // for(let i = 0; i < 10; i++) {
-    //   this.generatorBot();
-    // }
-
-    // for(let i = 0; i < 10; i++) {
-    //   this.generatorFood();
-    // }
-
-    // clearInterval(this.botTimer);
-    // this.botTimer = setInterval(() => {
-    //   for(let i = 0; i < 15; i++) {
-    //     this.generatorFood();
-    //     this.generatorBot();
-    //   }
-    // }, 5000);
-
-    this.render();    
+    this.onlineRender();    
   }
 
   ngOnInit() {
@@ -155,7 +124,7 @@ export class AppComponent {
     }
   }
 
-  onlieRender() {
+  onlineRender() {
     this.screenCenter = {
       x: this.container.nativeElement.offsetWidth / 2,
       y: this.container.nativeElement.offsetHeight / 2
@@ -163,37 +132,19 @@ export class AppComponent {
 
     this.clearCtx(this.ctx);
 
-    const now = Date.now();
-    if(!this.lastDate) {
-      this.lastDate = now;
-    }
-    // this.update(now - this.lastDate);
-
     this.renderGroud(this.ctx, this.wsService.dragons[this.wsService.id].header);
-    // this.dragon.render(this.ctx);
-    // for(let i in this.bot) {
-    //   this.bot[i].render(this.ctx);
-    // }
-    
-    // this.foods.forEach((food)=>{
-    //   food.render(this.ctx);
-    // })
+
     for(let i in this.wsService.dragons) {
-      
       if (this.wsService.dragons[i]) {
         this.renderDragon(this.ctx, this.wsService.dragons[i]);
       }
     }
-    // if(this.collisionDetection()) {
-    //   this.gameOver();
-    // }
-    
-    this.lastDate = now;
 
     if (this.start) {
-      requestAnimationFrame(this.render.bind(this));
+      requestAnimationFrame(this.onlineRender.bind(this));
     }
   }
+
   render() {
     this.screenCenter = {
       x: this.container.nativeElement.offsetWidth / 2,
@@ -492,20 +443,21 @@ export class AppComponent {
     return false;
   }
 
-  gameStart() {
+  startSingleGame() {
     this.start = true;
     this.menuVisibility = false;
 
-    if (this.mode === 1) {
-      this.wsService.joinGame().subscribe(()=>{
-        console.log(1);
-        this.initOnlineGame();
-      });
-    }
-    
-    else {
-      this.initGame();
-    }
+    this.initGame();
+  }
+
+  startOnlineGame() {
+    this.start = true;
+    this.menuVisibility = false;
+    this.mode = 1;
+
+    // this.wsService.joinGame().subscribe(()=>{
+    this.initOnlineGame();
+    // });
   }
 
   gameOver() {

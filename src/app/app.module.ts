@@ -9,6 +9,7 @@ import { RankComponent } from './rank/rank.component';
 import { SpeedUpComponent } from './speed-up/speed-up.component';
 
 import { WsService } from './ws/ws.service';
+import { RoomComponent } from './room/room.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { WsService } from './ws/ws.service';
     JoystickComponent,
     MenuComponent,
     RankComponent,
-    SpeedUpComponent
+    SpeedUpComponent,
+    RoomComponent
   ],
   imports: [
     BrowserModule

@@ -2,7 +2,7 @@
   <canvas #canvas class="ground">
   </canvas>
 </div>
-<app-joystick #joystick></app-joystick>
+<app-joystick #joystick [mode]="mode"></app-joystick>
 <app-speed-up #speedUp></app-speed-up>
-<app-menu [(visibility)]="menuVisibility" (startGame)="gameStart()"></app-menu>
+<app-menu [(visibility)]="menuVisibility" (startSingleGame)="startSingleGame()" (startOnlineGame)="startOnlineGame()"> </app-menu>
 <app-rank [score]="dragon?.score"></app-rank>
