@@ -10,7 +10,7 @@ export class RoomComponent implements OnInit {
   @Output() oStart = new EventEmitter();
 
   userList = [];
-  constructor(private wsService: WsService) { }
+  constructor(public wsService: WsService) { }
 
   ngOnInit() {
     this.updateUserList();

@@ -16,7 +16,8 @@ export class MenuComponent implements OnInit {
   constructor(private wsService: WsService) { }
 
   ngOnInit() {
-    this.wsService.connect();
+    // this.wsService.connect().subscribe((data) => {
+    // });
   }
 
   hideMenu() {

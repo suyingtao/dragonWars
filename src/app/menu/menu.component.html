@@ -1,15 +1,15 @@
 <div class="menu" *ngIf="visibility">
   <ul class="menu-list">
     <h2 class="title">贪吃龙</h2>
-    <li class="menu-item" (click)="singleGame()">
-      单人游戏
+    <li class="menu-item" >
+      <button (click)="singleGame()"> 单人游戏 </button>
     </li>
-    <li class="menu-item" (click)="createRoom()">
-      创建房间
+    <li class="menu-item">
+      <button disabled="disabled" (click)="createRoom()">创建房间</button>
     </li>
     <input #roomName (keyup)="inputRoom = roomName.value"> 
-    <li class="menu-item" (click)="joinRoom()">
-      进入房间
+    <li class="menu-item" >
+      <button disabled="disabled" (click)="joinRoom()">进入房间</button>
     </li>
   </ul>
   <app-room *ngIf="wsService.roomID" (oStart)="startOnlineGame.emit()"></app-room>

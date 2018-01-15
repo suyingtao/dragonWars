@@ -5,7 +5,7 @@ import * as io from 'socket.io-client';
 @Injectable()
 export class WsService {
     socket: SocketIOClient.Socket;
-    host = '192.168.1.179:9091';
+    host = '192.168.43.82:9091';
     id;
     dragons;
     roomID;
