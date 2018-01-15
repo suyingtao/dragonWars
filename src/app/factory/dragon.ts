@@ -167,7 +167,7 @@ export class Dragon {
 
         this.radius = tempRadius > 15 ? 15 : tempRadius;
 
-        this.speed = 30 + 900 / this.radius;
+        this.speed = 45 + 800 / this.radius;
 
         // 转向速度 angle/ms
         const turnSpeed = this.turnSpeed;
@@ -224,15 +224,8 @@ export class Dragon {
 
         const moveX = parseFloat((this.speed * space / 1000 * Math.cos(Math.PI * this.direction / 180)).toFixed(2));
         const moveY = parseFloat((this.speed * space / 1000 * Math.sin(Math.PI * this.direction / 180)).toFixed(2));
-        const moveDistance = parseFloat((Math.sqrt(Math.pow(moveX, 2) + Math.pow(moveY, 2))).toFixed(2));
+        const moveDistance = parseFloat((this.speed * space / 1000).toFixed(2));
 
-        // if (this.moveDistance >= 1) {
-        //     this.moveDistance = 0;
-        //     this.body.unshift({x: this.header.x, y: this.header.y});
-        //     this.body.pop();
-        // } else {
-        //     this.moveDistance += moveDistance;
-        // }
         this.moveDistance += moveDistance;
         this.bodyMove({x: this.header.x + moveX, y: parseFloat((this.header.y - moveY).toFixed(2))});
         this.header.x += moveX;
@@ -356,7 +349,7 @@ export class Dragon {
     grow(p: Position, energy: number = 1) {
         this.score += energy;
 
-        if (this.body.length >= 200) {
+        if (this.body.length >= 300) {
             return;
         }
         for (let i = 0; i < energy; i++) {

@@ -37,7 +37,7 @@ export class AppComponent {
   menuVisibility = true;
   
   // 加速系数
-  speedUpCoefficient = 1.3;
+  speedUpCoefficient = 1.6;
 
   // foods
   foods: Array<Food> = [];
