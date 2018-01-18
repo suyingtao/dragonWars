@@ -32,8 +32,11 @@ export class AppComponent {
     y: 0
   };
   start = false;
+  startTime;
+  endTime;
   mode = 0;
 
+  // visibility
   menuVisibility = true;
   gameoverVisibility = false;
   // 加速系数
@@ -46,6 +49,7 @@ export class AppComponent {
   }
 
   initGame() {
+    this.startTime = Date.now();
     this.joystick.joystick.init();
     this.speedUp.speedUp.init();
     this.dragon = new Dragon(
@@ -461,6 +465,7 @@ export class AppComponent {
   }
 
   gameOver() {
+    this.endTime = Date.now();
     this.start = false;
     this.gameoverVisibility = true;
     this.menuVisibility = true;

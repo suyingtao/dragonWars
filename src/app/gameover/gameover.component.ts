@@ -7,8 +7,10 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class GameoverComponent implements OnInit {
   @Input() score = 0;
+  @Input() time;
   @Input() visibility: boolean;
   @Output() visibilityChange = new EventEmitter();
+
   constructor() { }
 
   ngOnInit() {

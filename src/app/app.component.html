@@ -6,4 +6,4 @@
 <app-speed-up #speedUp></app-speed-up>
 <app-menu [(visibility)]="menuVisibility" (startSingleGame)="startSingleGame()" (startOnlineGame)="startOnlineGame()"> </app-menu>
 <app-rank [score]="dragon?.score"></app-rank>
-<app-gameover [(visibility)]="gameoverVisibility" [score]="dragon?.score"></app-gameover>
+<app-gameover [(visibility)]="gameoverVisibility" [score]="dragon?.score" [time]="endTime - startTime"></app-gameover>

@@ -7,7 +7,7 @@
     z-index: 10;
     background-color: rgba(0, 0, 0, 0.95);
     text-align: center;
-    padding: 50px;
+    padding: 10vh 0;
     box-sizing: border-box;
     color: white;
 }
@@ -16,16 +16,18 @@
     height: 20vh;
     line-height: 20vh;
     font-size: 50px;
+    margin: 5vh 0;
 }
 
 .result {
-    height: 30vh;
-    line-height: 30vh;
+    height: 15vh;
+    line-height: 15vh;
     font-size: 22px;
     font-weight: 600;
 }
 
 .closeBtn {
+    margin-top: 5vh;
     color: white;
     height: 30px;
     line-height: 30px;

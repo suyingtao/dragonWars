@@ -21,10 +21,15 @@
             &:hover {
                 background-color: #eee;
             }
+            button {
+                height: 100%;
+                width: 100%;
+                font-size: 18px;
+            }
         }
     }
     .title {
-        font-size: 30px;
+        font-size: 40px;
         line-height: 50px;
         height: 50px;
         margin: 30px;
