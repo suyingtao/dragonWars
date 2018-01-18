@@ -1,0 +1,33 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.95);
+    text-align: center;
+    padding: 50px;
+    box-sizing: border-box;
+    color: white;
+}
+
+.title {
+    height: 20vh;
+    line-height: 20vh;
+    font-size: 50px;
+}
+
+.result {
+    height: 30vh;
+    line-height: 30vh;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.closeBtn {
+    color: white;
+    height: 30px;
+    line-height: 30px;
+    font-size: 18px;
+}

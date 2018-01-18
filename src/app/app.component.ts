@@ -35,7 +35,7 @@ export class AppComponent {
   mode = 0;
 
   menuVisibility = true;
-  
+  gameoverVisibility = false;
   // 加速系数
   speedUpCoefficient = 1.6;
 
@@ -462,6 +462,7 @@ export class AppComponent {
 
   gameOver() {
     this.start = false;
+    this.gameoverVisibility = true;
     this.menuVisibility = true;
   }
 
