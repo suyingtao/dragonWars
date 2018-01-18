@@ -1,9 +1,17 @@
 .rank {
     position: fixed;
-    top: 0;
-    right: 0;
+    top: 10px;
+    right: 10px;
     width: 80px;
-    min-height: 100px;
-    background-color: rgba(200, 200, 200, 0.5);
+    min-height: 50px;
+    border-radius: 10px;
+    background-color: rgba(43, 78, 233, 0.1);
     text-align: center;
+}
+
+.score {
+    font-size: 14px;
+    font-weight: 500;
+    height: 50px;
+    line-height: 50px;
 }

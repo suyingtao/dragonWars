@@ -538,9 +538,10 @@ export class AppComponent {
 
     positons = positons.filter((v, i) => {
       return i % (energy * 5) === 0;
-    })
+    });
+
     positons.forEach((p) => {
        this.generatorFood(p, energy);
-    })
+    });
   }
 }
