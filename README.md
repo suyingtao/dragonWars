@@ -1,3 +1,16 @@
+# 基本介绍
+
+一款基于angular2的移动端贪吃蛇大作战  
+[Demo](http://verysao.com/)  
+暂时未开放多人模式
+
+# 本地运行
+
+```
+    npm i
+    ng serve -p 0
+```
+
 # DragonWars
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.5.5.
