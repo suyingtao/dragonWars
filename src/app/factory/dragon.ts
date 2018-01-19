@@ -174,50 +174,50 @@ export class Dragon {
 
         if (Math.abs(angle - this.direction) < 180) {
             if (angle - this.direction > 0) {
-                this.direction += turnSpeed * space;
-                if (this.direction > angle) {
+                if (turnSpeed * space > angle - this.direction) {
                     this.direction = angle;
+                } else {
+                    this.direction += turnSpeed * space;
                 }
-            }
-            if (angle - this.direction < 0) {
-                this.direction -= turnSpeed * space;
-                if (this.direction < angle) {
+            } else if (angle - this.direction < 0) {
+                if (turnSpeed * space > this.direction - angle) {
                     this.direction = angle;
+                } else {
+                    this.direction -= turnSpeed * space;
                 }
             }
         }
+
         if (Math.abs(angle - this.direction) > 180) {
             if (angle - this.direction > 0) {
                 this.direction -= turnSpeed * space;
-                if (this.direction > 360) {
-                    this.direction -= 360;
-                }
+
                 if (this.direction < 0) {
                     this.direction += 360;
+                    if (this.direction < angle) {
+                        this.direction = angle;
+                    }
                 }
-                if (this.direction < angle) {
-                    this.direction = angle;
-                }
-            }
-            if (angle - this.direction < 0) {
+
+            } else if (angle - this.direction < 0) {
                 this.direction += turnSpeed * space;
+
                 if (this.direction > 360) {
                     this.direction -= 360;
                 }
-                if (this.direction < 0) {
-                    this.direction += 360;
-                }
+
                 if (this.direction > angle) {
                     this.direction = angle;
                 }
             }
         }
-        if (this.direction > 360) {
-            this.direction -= 360;
-        }
-        if (this.direction < 0) {
-            this.direction += 360;
-        }
+
+        // if (this.direction > 360) {
+        //     this.direction -= 360;
+        // }
+        // if (this.direction < 0) {
+        //     this.direction += 360;
+        // }
 
         // 立即转向
         // this.direction = angle;
