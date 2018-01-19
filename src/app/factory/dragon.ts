@@ -204,11 +204,11 @@ export class Dragon {
 
                 if (this.direction > 360) {
                     this.direction -= 360;
+                    if (this.direction > angle) {
+                        this.direction = angle;
+                    }
                 }
 
-                if (this.direction > angle) {
-                    this.direction = angle;
-                }
             }
         }
 
