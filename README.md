@@ -2,6 +2,7 @@
 
 一款基于angular2的移动端贪吃蛇大作战  
 [Demo](http://verysao.com/)  
+![img](https://github.com/suyingtao/dragonWars/blob/master/screenshot/start.png)  
 暂时未开放多人模式
 
 # 本地运行
