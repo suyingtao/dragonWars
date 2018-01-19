@@ -10,8 +10,9 @@ export class SpeedUpComponent implements OnInit {
   @ViewChild('speedUp') canvas: ElementRef;
   speedUp: SpeedUp;
   ctx: any;
-  size;
-  clientWidth;
+  size: number;
+  clientWidth: number;
+
   constructor() {
     this.initSize();
   }
