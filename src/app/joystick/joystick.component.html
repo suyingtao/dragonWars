@@ -1,4 +1,4 @@
-<canvas id="joystick" #joystick height="100" width="100"
+<canvas id="joystick" #joystick [height]="size" [width]="size"
         (touchstart)="handleTouch($event)"
         (touchmove)="handleTouch($event)"
         (touchend)="handleTouch($event)">

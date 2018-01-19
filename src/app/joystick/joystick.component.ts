@@ -9,16 +9,18 @@ import { WsService } from '../ws/ws.service';
 })
 export class JoystickComponent implements OnInit {
   @ViewChild('joystick') canvas: ElementRef;
+  @Input() mode = 0;
   joystick: Joystick;
   ctx: any;
-
-  @Input() mode = 0;
+  size: number;
+  clientWidth: number;
 
   constructor(private wsService: WsService) {
     this.joystick = new Joystick();
   }
 
   ngOnInit() {
+    this.initSize();
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.render();
   }
@@ -42,7 +44,30 @@ export class JoystickComponent implements OnInit {
   }
 
   render() {
+    if (this.clientWidth !== document.body.clientWidth) {
+      this.initSize();
+    }
     this.joystick.render(this.ctx);
     requestAnimationFrame(this.render.bind(this));
+  }
+
+  initSize() {
+    this.clientWidth = document.body.clientWidth;
+    this.size = this.clientWidth / 5 > 100 ? 100 : this.clientWidth / 5;
+    this.joystick = new Joystick(
+      {x: this.size / 2, y: this.size / 2},
+      {
+        color: '#e5e5e5',
+        radius: this.size / 2
+      },
+      {
+        position: {
+          x: 0,
+          y: 0
+        },
+        color: '#aaa',
+        radius: this.size / 5
+      }
+    );
   }
 }
