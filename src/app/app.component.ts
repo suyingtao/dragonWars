@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, ComponentRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, ComponentRef, OnInit } from '@angular/core';
 import { Dragon } from './factory/dragon';
 import { Position, Food } from './factory/food';
 import { Joystick } from './factory/joystick';
@@ -6,23 +6,24 @@ import { JoystickComponent } from './joystick/joystick.component';
 import { SpeedUp } from './factory/speedUp';
 import { SpeedUpComponent } from './speed-up/speed-up.component';
 import { WsService } from './ws/ws.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
   @ViewChild('canvas') groud: ElementRef;
   @ViewChild('container') container: ElementRef;
   @ViewChild('joystick') joystick: JoystickComponent;
   @ViewChild('speedUp') speedUp: SpeedUpComponent;
 
   ctx: any;
-  gridSize: number = 20;
-  gridColor: string = '#f6f6f6';
-  height: number = 800;
-  width: number = 800;
+  gridSize = 20;
+  gridColor = '#f6f6f6';
+  height = 800;
+  width = 800;
   dragon: Dragon;
   bot: Array<Dragon> = [];
   botTimer;
@@ -45,7 +46,7 @@ export class AppComponent {
   // foods
   foods: Array<Food> = [];
 
-  constructor (private wsService: WsService){
+  constructor (private wsService: WsService) {
   }
 
   initGame() {
@@ -58,8 +59,8 @@ export class AppComponent {
       0,
       200,
       [{x: 150, y: 151}, {x: 150, y: 152}, {x: 150, y: 153}, {x: 149, y: 153}, {x: 148, y: 153}, {x: 147, y: 152}, {x: 147, y: 151},
-        {x: 147, y: 152},{x: 147, y: 153},{x: 147, y: 154},{x: 147, y: 155},{x: 147, y: 156},{x: 147, y: 157},{x: 147, y: 158},{x: 147, y: 159},{x: 147, y: 160},
-        {x: 147, y: 161},{x: 147, y: 162}],
+        {x: 147, y: 152}, {x: 147, y: 153}, {x: 147, y: 154}, {x: 147, y: 155}, {x: 147, y: 156}, {x: 147, y: 157}, {x: 147, y: 158},
+        {x: 147, y: 159}, {x: 147, y: 160}, {x: 147, y: 161}, {x: 147, y: 162}],
       0,
       '#FF4040'
     );
@@ -67,17 +68,17 @@ export class AppComponent {
     this.foods = [];
     this.lastDate = null;
 
-    for(let i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
       this.generatorBot();
     }
 
-    for(let i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
       this.generatorFood();
     }
 
     clearInterval(this.botTimer);
     this.botTimer = setInterval(() => {
-      for(let i = 0; i < 15; i++) {
+      for (let i = 0; i < 15; i++) {
         this.generatorFood();
         this.generatorBot();
       }
@@ -89,15 +90,15 @@ export class AppComponent {
   initOnlineGame() {
     this.joystick.joystick.init();
     this.speedUp.speedUp.init();
-    this.onlineRender();    
+    this.onlineRender();
   }
 
   ngOnInit() {
     this.ctx = this.groud.nativeElement.getContext('2d');
 
     if (window.devicePixelRatio) {
-      this.groud.nativeElement.style.width = this.width + "px";
-      this.groud.nativeElement.style.height = this.height + "px";
+      this.groud.nativeElement.style.width = this.width + 'px';
+      this.groud.nativeElement.style.height = this.height + 'px';
       this.groud.nativeElement.height = this.height * window.devicePixelRatio;
       this.groud.nativeElement.width = this.width * window.devicePixelRatio;
       this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
@@ -110,16 +111,18 @@ export class AppComponent {
   }
 
   renderGroud(ctx, position: Position) {
-    this.groud.nativeElement.style.transform = 'translate(' + (this.screenCenter.x - position.x) + 'px,' + (this.screenCenter.y - position.y) + 'px)';
+    this.groud.nativeElement.style.transform
+      = 'translate(' + (this.screenCenter.x - position.x) + 'px,' + (this.screenCenter.y - position.y) + 'px)';
     ctx.lineWidth = 1;
-    for(let x = 0; x < this.height / this.gridSize; x++) {
+
+    for (let x = 0; x < this.height / this.gridSize; x++) {
       ctx.beginPath();
       ctx.lineTo(0, x * this.gridSize);
       ctx.lineTo(this.height, x * this.gridSize);
       ctx.strokeStyle = this.gridColor;
       ctx.stroke();
     }
-    for(let x = 0; x < this.width / this.gridSize; x++) {
+    for (let x = 0; x < this.width / this.gridSize; x++) {
       ctx.beginPath();
       ctx.lineTo(x * this.gridSize, 0);
       ctx.lineTo(x * this.gridSize, this.width);
@@ -132,13 +135,13 @@ export class AppComponent {
     this.screenCenter = {
       x: this.container.nativeElement.offsetWidth / 2,
       y: this.container.nativeElement.offsetHeight / 2
-    }
+    };
 
     this.clearCtx(this.ctx);
 
     this.renderGroud(this.ctx, this.wsService.dragons[this.wsService.id].header);
 
-    for(let i in this.wsService.dragons) {
+    for (const i in this.wsService.dragons) {
       if (this.wsService.dragons[i]) {
         this.renderDragon(this.ctx, this.wsService.dragons[i]);
       }
@@ -153,30 +156,33 @@ export class AppComponent {
     this.screenCenter = {
       x: this.container.nativeElement.offsetWidth / 2,
       y: this.container.nativeElement.offsetHeight / 2
-    }
+    };
 
     this.clearCtx(this.ctx);
 
     const now = Date.now();
-    if(!this.lastDate) {
+    if (!this.lastDate) {
       this.lastDate = now;
     }
     this.update(now - this.lastDate);
 
     this.renderGroud(this.ctx, this.dragon.header);
     this.dragon.render(this.ctx);
-    for(let i in this.bot) {
-      this.bot[i].render(this.ctx);
-    }
-    
-    this.foods.forEach((food)=>{
-      food.render(this.ctx);
-    })
 
-    if(this.collisionDetection()) {
+    for (const i in this.bot) {
+      if (this.bot[i]) {
+        this.bot[i].render(this.ctx);
+      }
+    }
+
+    this.foods.forEach((food) => {
+      food.render(this.ctx);
+    });
+
+    if (this.collisionDetection()) {
       this.gameOver();
     }
-    
+
     this.lastDate = now;
 
     if (this.start) {
@@ -297,31 +303,35 @@ export class AppComponent {
 
   update(space) {
     this.dragon.move(this.joystick.joystick.angle, this.speedUp.speedUp.touching ? space * this.speedUpCoefficient : space);
-    for (let i in this.bot) {
-      this.bot[i].move(this.randomDirection(this.bot[i]), space);
+    for (const i in this.bot) {
+      if (this.bot[i]) {
+        this.bot[i].move(this.randomDirection(this.bot[i]), space);
+      }
     }
   }
 
   /**
    * bot 随机方向
-   * @param d 
+   * @param d
    */
   randomDirection(d: Dragon) {
     const estimates = 70;
     const now = Date.now();
 
-    if(now - d.lastRandomDirc <= 300) return d.direction;
+    if (now - d.lastRandomDirc <= 300) {
+      return d.direction;
+    }
 
     if (Math.abs((d.header.x - this.width / 2)) + estimates >= this.width / 2 - d.radius) {
-      let t = Math.random() > 0.5? d.direction + 150 : d.direction - 150;
+      let t = Math.random() > 0.5 ? d.direction + 150 : d.direction - 150;
 
       t = t > 0 ? t % 360 : 360 + t;
       d.lastRandomDirc = now;
       d.direction = t;
     }
 
-    if(Math.abs((d.header.y - this.height / 2)) + estimates >= this.height / 2 - d.radius) {
-      let t = Math.random() > 0.5? d.direction + 150 : d.direction - 150;
+    if (Math.abs((d.header.y - this.height / 2)) + estimates >= this.height / 2 - d.radius) {
+      let t = Math.random() > 0.5 ? d.direction + 150 : d.direction - 150;
       t = t > 0 ? t % 360 : 360 + t;
 
       d.lastRandomDirc = now;
@@ -385,7 +395,7 @@ export class AppComponent {
       }
 
       // 机器人撞机器人
-      for (let j = 0; j< this.bot.length; j++) {
+      for (let j = 0; j < this.bot.length; j++) {
         if (i !== j && this.dragonCollisionJudge(this.bot[i], this.bot[j])) {
           this.dragonDie(this.bot[i]);
           this.bot.splice(i, 1);
@@ -394,7 +404,7 @@ export class AppComponent {
         }
       }
     }
-    
+
     return false;
   }
 
@@ -407,7 +417,7 @@ export class AppComponent {
       return true;
     }
 
-    if(Math.abs((dragon.header.y - this.height / 2)) >= this.height / 2 - dragon.radius) {
+    if (Math.abs((dragon.header.y - this.height / 2)) >= this.height / 2 - dragon.radius) {
       return true;
     }
 
@@ -433,7 +443,7 @@ export class AppComponent {
       return true;
     }
 
-    for(let i = 0; i < t.body.length; i++) {
+    for (let i = 0; i < t.body.length; i++) {
       const dx = t.body[i].x - s.header.x;
       const dy = t.body[i].y - s.header.y;
       const d = Math.sqrt(dx * dx + dy * dy);
@@ -475,14 +485,14 @@ export class AppComponent {
     const header = {
       x: Math.floor(Math.random() * (this.width - 50)) + 70,
       y: Math.floor(Math.random() * (this.height - 50)) + 50,
-    }
+    };
     const body = [];
 
-    for(let i = 1; i < 20; i++) {
+    for (let i = 1; i < 20; i++) {
       body.push({
         x: header.x - i,
         y: header.y
-      })
+      });
     }
 
     this.bot.push(new Dragon(
@@ -497,11 +507,11 @@ export class AppComponent {
   }
 
   generatorFood(p?: Position, energy?: number) {
-    if (!p){
+    if (!p) {
       p = {
         x: Math.floor(Math.random() * this.width),
         y: Math.floor(Math.random() * this.height)
-      }
+      };
     }
 
     if (!energy) {
@@ -512,19 +522,19 @@ export class AppComponent {
   }
 
   addFoods(f: Array<Food>) {
-    f.forEach((fd)=>{
+    f.forEach((fd) => {
       this.foods.push(fd);
     });
   }
 
-  
+
 
   eatJudge(dragon: Dragon, food: Food) {
     const dx = dragon.header.x - food.position.x;
     const dy = dragon.header.y - food.position.y;
     const d = Math.sqrt(dx * dx + dy * dy);
 
-    if(d < dragon.radius + food.radius) {
+    if (d < dragon.radius + food.radius) {
       return true;
     }
 
@@ -539,7 +549,7 @@ export class AppComponent {
 
   dragonDie(dragon: Dragon) {
     let positons = dragon.die();
-    
+
     const energy = Math.ceil(positons.length / 25);
 
     positons = positons.filter((v, i) => {
