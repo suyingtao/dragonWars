@@ -13,7 +13,7 @@ export class Food {
         this.position = position;
         this.energy = energy;
         this.radius = Math.floor(3 + energy * 0.3);
-        if(this.radius >= 7) {
+        if (this.radius >= 7) {
             this.radius = 7;
         }
         this.color = '#' + Math.floor(Math.random() * 0xffffff).toString(16);
