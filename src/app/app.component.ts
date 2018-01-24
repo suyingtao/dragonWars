@@ -167,6 +167,11 @@ export class AppComponent implements OnInit {
     this.update(now - this.lastDate);
 
     this.renderGroud(this.ctx, this.dragon.header);
+
+    this.foods.forEach((food) => {
+      food.render(this.ctx);
+    });
+
     this.dragon.render(this.ctx);
 
     for (const i in this.bot) {
@@ -174,10 +179,6 @@ export class AppComponent implements OnInit {
         this.bot[i].render(this.ctx);
       }
     }
-
-    this.foods.forEach((food) => {
-      food.render(this.ctx);
-    });
 
     if (this.collisionDetection()) {
       this.gameOver();
@@ -361,7 +362,7 @@ export class AppComponent implements OnInit {
     // 人吃食物
     for (let i = 0; i < this.foods.length; i++) {
       if (this.eatJudge(this.dragon, this.foods[i])) {
-        this.eat(this.dragon, i);
+        this.eat(this.dragon, this.foods[i]);
         i--;
       }
     }
@@ -369,7 +370,7 @@ export class AppComponent implements OnInit {
       // 机器人 eat food
       for (let j = 0; j < this.foods.length; j++) {
         if (this.eatJudge(this.bot[i], this.foods[j])) {
-          this.eat(this.bot[i], j);
+          this.eat(this.bot[i], this.foods[j]);
           j--;
         }
       }
@@ -530,21 +531,37 @@ export class AppComponent implements OnInit {
 
 
   eatJudge(dragon: Dragon, food: Food) {
+    const eatRadius = 4;
+    if (!food.alive) {
+      return false;
+    }
     const dx = dragon.header.x - food.position.x;
     const dy = dragon.header.y - food.position.y;
     const d = Math.sqrt(dx * dx + dy * dy);
 
-    if (d < dragon.radius + food.radius) {
+    if (d <= dragon.radius + food.radius + eatRadius) {
       return true;
     }
 
     return false;
   }
 
-  eat(dragon: Dragon, foodIndex: number) {
-    const energy = this.foods[foodIndex].energy;
-    this.foods.splice(foodIndex, 1);
-    dragon.grow(dragon.body[dragon.body.length - 1], energy);
+  eat(dragon: Dragon, food: Food) {
+    const energy = food.energy;
+    food.die();
+    let t = 0;
+    const timer = setInterval(() => {
+      const dx = dragon.header.x - food.position.x - dragon.radius - food.radius;
+      const dy = dragon.header.y - food.position.y - dragon.radius - food.radius;
+      food.position.x += dx / 10;
+      food.position.y += dy / 10;
+      t++;
+      if (t === 10) {
+        clearInterval(timer);
+        this.foods.splice(this.foods.indexOf(food), 1);
+        dragon.grow(dragon.body[dragon.body.length - 1], energy);
+      }
+    }, 17);
   }
 
   dragonDie(dragon: Dragon) {

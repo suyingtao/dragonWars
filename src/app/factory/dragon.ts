@@ -9,7 +9,7 @@ export class Dragon {
     header: Position;
     body: Array<Position>;
     alive = true;
-    radius = 8;
+    radius: number;
 
     color: string;
     headerColor: string;
@@ -119,9 +119,9 @@ export class Dragon {
         ctx.beginPath();
         ctx.fillStyle = 'white';
         ctx.arc(
-            this.header.x + (this.radius - 2) * Math.cos(Math.PI * (this.direction) / 180),
-            this.header.y - (this.radius - 2) * Math.sin(Math.PI * (this.direction) / 180),
-            1,
+            this.header.x + (this.radius - this.radius / 6) * Math.cos(Math.PI * (this.direction) / 180),
+            this.header.y - (this.radius - this.radius / 6) * Math.sin(Math.PI * (this.direction) / 180),
+            this.radius / 6,
             0,
             2 * Math.PI
         );

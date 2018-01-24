@@ -8,7 +8,7 @@ export class Food {
     color = '#CAE1E1';
     energy = 1;
     position: Position;
-
+    alive = true;
     constructor (position: Position, energy: number = 1) {
         this.position = position;
         this.energy = energy;
@@ -27,4 +27,7 @@ export class Food {
         ctx.closePath();
     }
 
+    die() {
+        this.alive = false;
+    }
 }
