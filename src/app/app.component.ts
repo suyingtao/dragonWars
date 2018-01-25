@@ -76,7 +76,6 @@ export class AppComponent implements OnInit {
       this.generatorFood();
     }
 
-    clearInterval(this.botTimer);
     this.botTimer = setInterval(() => {
       for (let i = 0; i < 15; i++) {
         this.generatorFood();
@@ -483,6 +482,7 @@ export class AppComponent implements OnInit {
     this.start = false;
     this.gameoverVisibility = true;
     this.menuVisibility = true;
+    clearInterval(this.botTimer);
   }
 
   generatorBot() {
@@ -554,10 +554,10 @@ export class AppComponent implements OnInit {
     food.die();
     let t = 0;
     const timer = setInterval(() => {
-      const dx = dragon.header.x - food.position.x - dragon.radius - food.radius;
-      const dy = dragon.header.y - food.position.y - dragon.radius - food.radius;
-      food.position.x += dx / 5;
-      food.position.y += dy / 5;
+      const dx = dragon.header.x - food.position.x;
+      const dy = dragon.header.y - food.position.y;
+      food.position.x += dx * t / 5;
+      food.position.y += dy * t / 5;
       t++;
       if (t === 5) {
         clearInterval(timer);
