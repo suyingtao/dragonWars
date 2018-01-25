@@ -531,7 +531,7 @@ export class AppComponent implements OnInit {
 
 
   eatJudge(dragon: Dragon, food: Food) {
-    const eatRadius = 5;
+    const eatRadius = 10;
     if (!food.alive) {
       return false;
     }
