@@ -79,6 +79,7 @@ function minCircle(pArr: Array<Position>) {
 
     return tempCircle;
 }
+
 export class Dragon {
     name: string;
 
@@ -156,16 +157,16 @@ export class Dragon {
         ctx.beginPath();
         ctx.fillStyle = 'white';
         ctx.arc(
-            this.header.x + (this.radius - 2) * Math.cos(Math.PI * (this.direction - 90) / 180),
-            this.header.y - (this.radius - 2) * Math.sin(Math.PI * (this.direction - 90) / 180),
-            2,
+            this.header.x + (this.radius - 4) * Math.cos(Math.PI * (this.direction - 90) / 180),
+            this.header.y - (this.radius - 4) * Math.sin(Math.PI * (this.direction - 90) / 180),
+            4,
             0,
             2 * Math.PI
         );
         ctx.arc(
-            this.header.x + (this.radius - 2) * Math.cos(Math.PI * (this.direction + 90) / 180),
-            this.header.y - (this.radius - 2) * Math.sin(Math.PI * (this.direction + 90) / 180),
-            2,
+            this.header.x + (this.radius - 4) * Math.cos(Math.PI * (this.direction + 90) / 180),
+            this.header.y - (this.radius - 4) * Math.sin(Math.PI * (this.direction + 90) / 180),
+            4,
             0,
             2 * Math.PI
         );
@@ -175,16 +176,16 @@ export class Dragon {
         ctx.beginPath();
         ctx.fillStyle = 'black';
         ctx.arc(
-            this.header.x + (this.radius - 2) * Math.cos(Math.PI * (this.direction - 90) / 180),
-            this.header.y - (this.radius - 2) * Math.sin(Math.PI * (this.direction - 90) / 180),
-            1,
+            this.header.x + (this.radius - 4) * Math.cos(Math.PI * (this.direction - 90) / 180),
+            this.header.y - (this.radius - 4) * Math.sin(Math.PI * (this.direction - 90) / 180),
+            2,
             0,
             2 * Math.PI
         );
         ctx.arc(
-            this.header.x + (this.radius - 2) * Math.cos(Math.PI * (this.direction + 90) / 180),
-            this.header.y - (this.radius - 2) * Math.sin(Math.PI * (this.direction + 90) / 180),
-            1,
+            this.header.x + (this.radius - 4) * Math.cos(Math.PI * (this.direction + 90) / 180),
+            this.header.y - (this.radius - 4) * Math.sin(Math.PI * (this.direction + 90) / 180),
+            2,
             0,
             2 * Math.PI
         );
@@ -232,19 +233,19 @@ export class Dragon {
             );
             ctx.fillStyle = 'rgba(230, 230, 45, 0.1)';
             ctx.fill();
-            ctx.closePath();
             ctx.lineWidth = 3;
             ctx.strokeStyle = 'rgba(250, 250, 50, 0.5)';
             ctx.stroke();
+            ctx.closePath();
         }
     }
 
     move(angle: number, space: number) {
-        const tempRadius = Math.floor(7 + this.body.length / 100);
+        const tempRadius = Math.floor(12 + this.body.length / 100);
 
-        this.radius = tempRadius > 15 ? 15 : tempRadius;
+        this.radius = tempRadius > 20 ? 20 : tempRadius;
 
-        this.speed = 45 + 800 / this.radius;
+        this.speed = 105 + 400 / this.radius;
 
         // 转向速度 angle/ms
         const turnSpeed = this.turnSpeed;

@@ -303,6 +303,9 @@ export class AppComponent implements OnInit {
   }
 
   update(space) {
+    if (space >= 30) {
+      space = 30;
+    }
     this.dragon.move(this.joystick.joystick.angle, this.speedUp.speedUp.touching ? space * this.speedUpCoefficient : space);
     for (const i in this.bot) {
       if (this.bot[i]) {

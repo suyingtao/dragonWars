@@ -12,9 +12,9 @@ export class Food {
     constructor (position: Position, energy: number = 1) {
         this.position = position;
         this.energy = energy;
-        this.radius = Math.floor(3 + energy * 0.3);
-        if (this.radius >= 7) {
-            this.radius = 7;
+        this.radius = Math.floor(5 + energy * 0.3);
+        if (this.radius >= 9) {
+            this.radius = 9;
         }
         this.color = '#' + Math.floor(Math.random() * 0xffffff).toString(16);
     }
