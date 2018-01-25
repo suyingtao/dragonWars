@@ -531,7 +531,7 @@ export class AppComponent implements OnInit {
 
 
   eatJudge(dragon: Dragon, food: Food) {
-    const eatRadius = 4;
+    const eatRadius = 5;
     if (!food.alive) {
       return false;
     }
@@ -553,15 +553,15 @@ export class AppComponent implements OnInit {
     const timer = setInterval(() => {
       const dx = dragon.header.x - food.position.x - dragon.radius - food.radius;
       const dy = dragon.header.y - food.position.y - dragon.radius - food.radius;
-      food.position.x += dx / 10;
-      food.position.y += dy / 10;
+      food.position.x += dx / 5;
+      food.position.y += dy / 5;
       t++;
-      if (t === 10) {
+      if (t === 5) {
         clearInterval(timer);
         this.foods.splice(this.foods.indexOf(food), 1);
         dragon.grow(dragon.body[dragon.body.length - 1], energy);
       }
-    }, 17);
+    }, 40);
   }
 
   dragonDie(dragon: Dragon) {
