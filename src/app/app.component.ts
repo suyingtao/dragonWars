@@ -6,6 +6,7 @@ import { JoystickComponent } from './joystick/joystick.component';
 import { SpeedUp } from './factory/speedUp';
 import { SpeedUpComponent } from './speed-up/speed-up.component';
 import { WsService } from './ws/ws.service';
+import { RankComponent } from './rank/rank.component';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ export class AppComponent implements OnInit {
   @ViewChild('container') container: ElementRef;
   @ViewChild('joystick') joystick: JoystickComponent;
   @ViewChild('speedUp') speedUp: SpeedUpComponent;
+  @ViewChild('rank') rank: RankComponent;
 
   ctx: any;
   gridSize = 20;
@@ -27,14 +29,14 @@ export class AppComponent implements OnInit {
   dragon: Dragon;
   bot: Array<Dragon> = [];
   botTimer;
+  botTime;
   lastDate: number;
   screenCenter = {
     x: 0,
     y: 0
   };
   start = false;
-  startTime;
-  endTime;
+  totalTime;
   mode = 0;
 
   // visibility
@@ -50,7 +52,7 @@ export class AppComponent implements OnInit {
   }
 
   initGame() {
-    this.startTime = Date.now();
+    this.totalTime = 0;
     this.joystick.joystick.init();
     this.speedUp.speedUp.init();
     this.dragon = new Dragon(
@@ -76,14 +78,8 @@ export class AppComponent implements OnInit {
       this.generatorFood();
     }
 
-    this.botTimer = setInterval(() => {
-      for (let i = 0; i < 15; i++) {
-        this.generatorFood();
-        this.generatorBot();
-      }
-    }, 5000);
-
     this.render();
+    this.rank.start();
   }
 
   initOnlineGame() {
@@ -187,6 +183,15 @@ export class AppComponent implements OnInit {
 
     if (this.start) {
       requestAnimationFrame(this.render.bind(this));
+
+      if (!this.botTime || Date.now() - this.botTime >= 5000) {
+        this.botTime = Date.now();
+        for (let i = 0; i < 8; i++) {
+          this.generatorFood();
+          this.generatorBot();
+        }
+      }
+
     }
   }
 
@@ -478,11 +483,12 @@ export class AppComponent implements OnInit {
   }
 
   gameOver() {
-    this.endTime = Date.now();
     this.start = false;
     this.gameoverVisibility = true;
     this.menuVisibility = true;
     clearInterval(this.botTimer);
+    this.totalTime = this.rank.time;
+    this.rank.resetTime();
   }
 
   generatorBot() {
