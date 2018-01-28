@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
   @ViewChild('joystick') joystick: JoystickComponent;
   @ViewChild('speedUp') speedUp: SpeedUpComponent;
   @ViewChild('rank') rank: RankComponent;
+  @ViewChild('bgm') bgm: ElementRef;
 
   ctx: any;
   gridSize = 20;
@@ -52,6 +53,7 @@ export class AppComponent implements OnInit {
   }
 
   initGame() {
+    this.bgm.nativeElement.play();
     this.totalTime = 0;
     this.joystick.joystick.init();
     this.speedUp.speedUp.init();
@@ -483,6 +485,7 @@ export class AppComponent implements OnInit {
   }
 
   gameOver() {
+    this.bgm.nativeElement.pause();
     this.start = false;
     this.gameoverVisibility = true;
     this.menuVisibility = true;
@@ -493,8 +496,8 @@ export class AppComponent implements OnInit {
 
   generatorBot() {
     const header = {
-      x: Math.floor(Math.random() * (this.width - 50)) + 70,
-      y: Math.floor(Math.random() * (this.height - 50)) + 50,
+      x: Math.floor(Math.random() * (this.width - 100)) + 50,
+      y: Math.floor(Math.random() * (this.height - 100)) + 50,
     };
     const body = [];
 
@@ -519,8 +522,8 @@ export class AppComponent implements OnInit {
   generatorFood(p?: Position, energy?: number) {
     if (!p) {
       p = {
-        x: Math.floor(Math.random() * this.width),
-        y: Math.floor(Math.random() * this.height)
+        x: Math.floor(Math.random() * this.width - 10) + 5,
+        y: Math.floor(Math.random() * this.height - 10) + 5
       };
     }
 
