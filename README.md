@@ -18,7 +18,7 @@
     npm i // 安装依赖
     ng serve -p 0 // 本地启动
 ```
-## 文件结构  
+# 文件结构  
 
 主要代码都位于src/app内，以下是app文件夹内的目录结构及文件说明。  
 此外，在src/assets内也有一些图片或自己修改的第三方js库。  
@@ -66,15 +66,16 @@
 | |____dragon.ts        贪吃蛇类
 |____ws
 | |____ws.service.ts        websocket服务（用于多人游戏）
-```
-## 渲染原理  
+```  
 
-使用canvas绘制游戏画面。  
+# 渲染原理  
+
+使用canvas绘制游戏画面。  
 在app.component.ts的ngOnInit中渲染摇杆及加速按钮，因为这两部分是不变的，不需要不断地重新绘制。  
 渲染的主要函数为app.component.ts内的render函数，依次绘制出地图、食物、贪吃蛇，先绘制的会位于底层。  
 在render函数内使用了 clearRect(0, 0, this.width, this.height) 和 requestAnimationFrame(this.render.bind(this)) 不断地清空、绘制、清空、绘制。  
 
-## Q&A  
+# Q&A  
 
 - 如何贪吃蛇始终位于屏幕中心？  
 
@@ -83,34 +84,12 @@
 - 贪吃蛇的身体如何跟随头部移动？
 
 需要分为两种情况，在单位时间内贪吃蛇移动一单位长度 和 贪吃蛇移动多单位长度。  
-一单位长度时比较简单，只需将旧的头部左边unshift进body数组，body数组pop掉最后一个，然后给头部赋新值。  
-多单位长度时，需要计算出旧头部移动到新头部可能出现的坐标，然后依次unshift进body数组内，body再pop掉多余的坐标。  
+1. 一单位长度时比较简单，只需将旧的头部左边unshift进body数组，body数组pop掉最后一个，然后给头部赋新值。  
+2. 多单位长度时，需要计算出旧头部移动到新头部可能出现的坐标，然后依次unshift进body数组内，body再pop掉多余的坐标。  
 
-
-# DragonWars
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.5.5.
-
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```
+ng build –-prod –-aot --env=prod
+```
