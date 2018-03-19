@@ -20,8 +20,9 @@
 ```
 ## 文件结构  
 
-主要代码都位于src/app内，以下是app文件夹内的目录结构及文件说明。  
+主要代码都位于src/app内，以下是app文件夹内的目录结构及文件说明。  
 此外，在src/assets内也有一些图片或自己修改的第三方js库。  
+```
 .
 |____app.component.html
 |____gameover
@@ -65,8 +66,7 @@
 | |____dragon.ts        贪吃蛇类
 |____ws
 | |____ws.service.ts        websocket服务（用于多人游戏）
-
-
+```
 ## 渲染原理  
 
 使用canvas绘制游戏画面。  
