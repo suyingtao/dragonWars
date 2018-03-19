@@ -6,21 +6,29 @@
 
 游戏的玩法和贪吃蛇大作战基本一致。左侧摇杆控制方向，右侧按钮加速，当你控制的贪吃蛇头部碰撞到墙壁或其他贪吃蛇时，Gameover。  
 
+由于时间和精力有限，使用node实现的多人游戏源码不忍直视，故不开源。如果你有充足的时间和精力，欢迎扩展出多人游戏版本~  
+
 # [Demo请使用移动设备访问verysao.com/dragon](http://verysao.com/dragon)  
 
-## 游戏截图  
+# 游戏截图  
 ![img](https://github.com/suyingtao/dragonWars/blob/master/screenshot/start.png)  
-暂时未开放多人模式  
 
-## 本地运行
+# 本地运行
 
 ```
     npm i // 安装依赖
     ng serve -p 0 // 本地启动
+```  
+
+# Build
+
 ```
+ng build –-prod –-aot --env=prod
+```  
+
 # 文件结构  
 
-    主要代码都位于src/app内，以下是app文件夹内的目录结构及文件说明。  
+    主要代码都位于src/app内，以下是src/app文件夹内的目录结构及文件说明。  
 
 ```
 .
@@ -87,9 +95,7 @@
 1. 一单位长度时比较简单，只需将旧的头部左边unshift进body数组，body数组pop掉最后一个，然后给头部赋新值。  
 2. 多单位长度时，需要计算出旧头部移动到新头部可能出现的坐标，然后依次unshift进body数组内，body再pop掉多余的坐标。  
 
+- 贪吃蛇初生的光圈大小如何计算?  
 
-## Build
-
-```
-ng build –-prod –-aot --env=prod
-```
+贪吃蛇的头部和身体都是一个一个点，光圈能够随着贪吃蛇形态的变化而变化。  
+这其实是一个`最小覆盖圆的增量算法`。[TypeScript实现最小覆盖圆增量算法](https://github.com/suyingtao/snippets/blob/master/%E6%9C%80%E5%B0%8F%E8%A6%86%E7%9B%96%E5%9C%86%E5%A2%9E%E9%87%8F%E7%AE%97%E6%B3%95(TypeScript).md)  
