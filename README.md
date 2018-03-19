@@ -11,7 +11,7 @@
 # [Demo请使用移动设备访问verysao.com/dragon](http://verysao.com/dragon)  
 
 # 游戏截图  
-![img](https://github.com/suyingtao/dragonWars/blob/master/screenshot/start.png)  
+![img](https://github.com/suyingtao/dragonWars/blob/master/screenshot/game.png)  
 
 # 本地运行
 
