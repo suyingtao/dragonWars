@@ -73,7 +73,7 @@
 使用canvas绘制游戏画面。  
 在app.component.ts的ngOnInit中渲染摇杆及加速按钮，因为这两部分是不变的，不需要不断地重新绘制。  
 渲染的主要函数为app.component.ts内的render函数，依次绘制出地图、食物、贪吃蛇，先绘制的会位于底层。  
-在render函数内使用了 clearRect(0, 0, this.width, this.height) 和 requestAnimationFrame(this.render.bind(this)) 不断地清空、绘制、清空、绘制。  
+在render函数内使用了 `clearRect(0, 0, this.width, this.height)` 和 `requestAnimationFrame(this.render.bind(this))` 不断地清空、绘制、清空、绘制，从而达到了动态的效果。  
 
 # Q&A  
 
